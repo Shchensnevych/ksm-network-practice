@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Лекція 3. Створення мережі міста за технологією PON</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      flowchart: { 
+        useMaxWidth: true,
+        htmlLabels: true,
+        padding: 5,
+        nodeSpacing: 15,
+        rankSpacing: 25
+      },
+      themeVariables: {
+        fontSize: '14px',
+        fontFamily: '"Inter", sans-serif',
+        edgeLabelBackground: 'transparent'
+      }
+    });
+  </script>
+  <style>
+    .mermaid, .mermaid * { text-indent: 0 !important; }
+    .mermaid .node foreignObject { text-align: center; }
+    .mermaid .node span, .mermaid .node p { text-align: center; display: inline-block; line-height: 1.25; padding: 1px; }
+    
+    /* Створюємо ідеальну прямокутну підложку під гілки (htmlLabels: true) */
+    .mermaid .edgeLabel {
+        background-color: rgba(255, 255, 255, 1) !important; /* 100% непрозорий білий фон */
+        border: 1px solid #a0a0a0 !important;
+        border-radius: 3px !important;
+        padding: 1px 4px !important; /* Мінімальні відступи, щоб не розширювати схему */
+        font-size: 13px !important; /* Трохи менший шрифт для компактності */
+        color: #000 !important;
+        display: inline-block !important;
+        line-height: 1 !important; /* Забираємо зайву висоту */
+        box-shadow: 0 1px 2px rgba(0,0,0,0.1) !important;
+    }
+
+    /* Додаємо відступ ТІЛЬКИ для кружечків (класи olt та tran) */
+    .mermaid .node.olt span, 
+    .mermaid .node.olt p,
+    .mermaid .node.tran span,
+    .mermaid .node.tran p {
+        padding: 2px 4px !important;
+    }
+
+    /* Приховуємо порожні підписи, щоб вони не створювали "риску" в кутку */
+    .mermaid .edgeLabel:empty {
+        display: none !important;
+    }
+
+    /* Приховуємо системний темний фон */
+    .mermaid .labelBkg {
+        background-color: transparent !important;
+        fill: none !important;
+        stroke: none !important;
+    }
+
+    /* Ліквідуємо порожні foreignObject */
+    .mermaid foreignObject[width="0"], .mermaid foreignObject[height="0"] {
+        display: none !important;
+    }
+  </style>
+</head>
+<body>
+
+<div style="max-width: 1400px; margin: 1rem auto 0;">
+  <nav class="nav-bar">
+    <a href="Lection2.html" class="nav-link">← Попередня лекція</a>
+    <a href="index.html" class="nav-link" style="color: var(--secondary-color);">На головну</a>
+  </nav>
+</div>
+
+<main class="container">
+<p class="center"><strong>Дисципліна: Практика з комп'ютерних мереж та систем</strong></p>
+
+<h1>Лекція 3. Створення мережі міста за технологією PON</h1>
+
+<p class="center"><em>Мета лекції:</em> визначення та засвоєння на практиці специфіки побудови комп’ютерної мережі за технологією PON, формування навичок розрахунку оптичного бюджету та кросування обладнання.</p>
+
+<h3 class="center">План вивчення:</h3>
+<ol>
+  <li>Аналіз місцевості та загальні принципи проектування мережі для приватного сектора.</li>
+  <li>Довідкові дані: затухання на розгалужувачах PLC та FBT.</li>
+  <li>Практичні розрахунки оптичного бюджету по гілках (волокнах) OLT.</li>
+</ol>
+
+<p class="center"><em>Ключові терміни:</em> проект мережі, оптичний бюджет, розрахунок загасання, каскадування дільників, оптична топологія.</p>
+
+<hr>
+
+<h2>1. Переваги технології GEPON (Сучасний контекст)</h2>
+
+<p>Для побудови сучасної мережі міста однією з найбільш економічно вигідних є технологія GEPON (Gigabit Ethernet Passive Optical Network). Виділимо основні переваги її використання як з точки зору класичної теорії, так і з позицій сучасного інженерного досвіду:</p>
+
+<ul>
+  <li><strong>Низькі витрати на експлуатацію (OPEX — Operating Expenses):</strong> Завдяки відсутності активного (електричного) обладнання на проміжних вузлах мережі, значно скорочуються витрати на обслуговування, оренду місця та живлення.</li>
+  <li><strong>Можливість поступового масштабування:</strong> Мережа дозволяє додавати нових абонентів (нові вузли) до вільного порту дільника без переривання роботи та перекомпіляції вже створеної інфраструктури.</li>
+  <li><strong>Економія оптичного кабелю:</strong> Побудова мережі цілого населеного пункту (приватного сектора) може бути реалізована на базі всього лише одного оптичного волокна (магістральної жили) за рахунок деревоподібної або шинної топології дільників.</li>
+  <li><strong>Багатофункціональність (Multi-Play):</strong> Класично PON дозволяє абонентам отримувати не тільки високошвидкісний доступ до Інтернету, а й цифрове телебачення (IPTV / КТБ — Кабельне ТБ), VoIP-телефонію (Voice over IP) та послуги телеметрії через один оптичний кабель.</li>
+  <li><strong>Висока надійність:</strong> Менша кількість активних ланок гарантує нижчу ймовірність збоїв через стрибки напруги чи перегрів обладнання у вуличних умовах.</li>
+</ul>
+
+<hr>
+
+<h2>2. Аналіз місцевості та підготовка до проектування мережі </h2>
+
+<p>При проектуванні міських мереж ділянки з багатоповерховими забудовами традиційно обслуговуються технологіями FTTB/FTTH (Fiber to the Building / Fiber to the Home — оптика до будівлі / до квартири). На противагу цьому, для об'єднання в мережу одноповерхових будинків (приватного сектора) найбільш уживаною і фінансово ефективною є технологія PON.</p>
+
+<p>У подальших дослідженнях щодо проектування оптичних мереж міста ми будемо використовувати технологію GEPON. Розглянемо специфіку побудови мережі за даною технологією на прикладі простої схеми (рис. 3.1).</p>
+
+<div style="text-align:center; margin: 15pt 0;">
+  <div style="border: 1.5pt dashed #B0C4DE; padding: 10pt; border-radius: 6px; margin-bottom: 8pt;">
+    <img src="assets/lection3/fig_3_1_pon_scheme.png" alt="Рис. 3.1. Схема мережі за технологією PON" style="max-width: 100%; border: 1px solid #ddd; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+  </div>
+  <p class="image-caption">Рис. 3.1. Схема мережі за технологією PON</p>
+</div>
+
+<p>Перейдемо безпосередньо до нашого завдання. Розглянемо розроблену карту-схему.</p>
+
+<div style="text-align:center; margin: 15pt 0;">
+  <div style="border: 1.5pt dashed #B0C4DE; padding: 10pt; border-radius: 6px; margin-bottom: 8pt;">
+    <img src="assets/lection3/fig_3_2_city_map.png" alt="Рис. 3.2. Карта-схема реального міста для проектування уявної мережі PON" style="max-width: 100%; border: 1px solid #ddd; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+  </div>
+  <p class="image-caption">Рис. 3.2. Карта-схема реального міста для проектування уявної мережі PON</p>
+</div>
+
+<p>Виконаємо спочатку аналіз місцевості. Відповідно до рис. 3.2 на заданій території знаходяться багатоповерхові будинки (умовно виділені червоними колами або квадратами), а всі інші будівлі відносяться до приватного сектору і є переважно одноповерховими. Ландшафт знаходиться на рівнині, характеризується незначною кількістю рослин (переважно дерева, насаджені вздовж вулиць Торгової, Перемоги, Райдужної, Світлодарської та в приватному секторі). Уздовж кожної вулиці розташовано стовпи ліній електропередач. Цю характеристику ми будемо використовувати для прокладання підвісного оптичного кабелю по стовпах (топологія мережі).</p>
+
+<h2>3. Оптичний бюджет та базові таблиці затухань</h2>
+
+<p>При проектуванні пасивної оптичної мережі головним завданням інженера є контроль <strong>оптичного бюджету</strong> (Loss Budget) — сумарних втрат світла на шляху від OLT до ONU. Для забезпечення стабільного зв'язку сигнал на вході абонентського ONU має бути в межах від -8 дБм до -26 дБм (не нижче допустимої чутливості приймача).</p>
+
+<p>У нашому проекті ми виходимо з того, що <strong>сигнал на виході OLT становить +2 дБм</strong> (потужність передавача SFP-модуля).</p>
+
+<p>Розрахунок втрат базується на сумуванні затухань на дільниках, але в реальній інженерній практиці слід враховувати ще два критично важливі компоненти:
+1) <strong>Втрати в оптичному кабелі:</strong> світло втрачає енергію в склі. Для довжини хвилі 1310 нм (висхідний потік) стандартне затухання становить близько <strong>0,36 дБ на 1 км</strong>.
+2) <strong>Втрати на з'єднаннях (Механіка та зварки):</strong> Кожне рознімне з'єднання (адаптер-патчкорд) вносить втрати близько <strong>0,5 дБ</strong>, а кожна зварка (термосаджувальна гільза) — <strong>~0,05 дБ</strong>.</p>
+
+<div class="note">
+  <p><em>Для спрощення поточних теоретичних розрахунків</em> у цій лекції (завдяки малим відстаням між вузлами в межах 1 км) ми будемо враховувати лише втрати на дільниках PLC/FBT та втрати на механічних з'єднаннях (постачання клієнта). Втрати відстані на кабелі та зварки будуть ігноруватися, однак вони є обов'язковими в реальному проектуванні!</p>
+</div>
+
+<p>Для розрахунків будемо керуватися значеннями з наведених нижче таблиць.</p>
+
+<p class="table-caption"><strong>Таблиця 3.1.</strong> Усереднені затухання сигналу на виходах зі зварних дільників FBT</p>
+<div class="table-responsive table-narrow">
+<table class="sim-table">
+  <tr>
+    <th>Дільник X/Y</th>
+    <th>Затухання X (менша частина), дБ</th>
+    <th>Затухання Y (більша частина), дБ</th>
+  </tr>
+  <tr><td>FBT 5/95</td><td>13,7</td><td>0,32</td></tr>
+  <tr><td>FBT 10/90</td><td>10,08</td><td>0,49</td></tr>
+  <tr><td>FBT 15/85</td><td>8,16</td><td>0,76</td></tr>
+  <tr><td>FBT 20/80</td><td>7,11</td><td>1,06</td></tr>
+  <tr><td>FBT 25/75</td><td>6,29</td><td>1,42</td></tr>
+  <tr><td>FBT 30/70</td><td>5,39</td><td>1,56</td></tr>
+  <tr><td>FBT 35/65</td><td>4,56</td><td>1,93</td></tr>
+  <tr><td>FBT 40/60</td><td>4,01</td><td>2,34</td></tr>
+  <tr><td>FBT 45/55</td><td>3,73</td><td>2,71</td></tr>
+  <tr><td>FBT 50/50</td><td>3,17</td><td>3,19</td></tr>
+</table>
+</div>
+
+<p class="table-caption"><strong>Таблиця 3.2.</strong> Усереднені затухання сигналу на планарних дільниках PLC</p>
+<div class="table-responsive table-narrow">
+<table class="sim-table">
+  <tr>
+    <th>Дільник PLC 1xN</th>
+    <th>Затухання на кожному виході, дБ</th>
+  </tr>
+  <tr><td>PLC 1x2</td><td>4,3</td></tr>
+  <tr><td>PLC 1x4</td><td>7,4</td></tr>
+  <tr><td>PLC 1x8</td><td>10,7</td></tr>
+  <tr><td>PLC 1x16</td><td>13,9</td></tr>
+  <tr><td>PLC 1x32</td><td>17,2</td></tr>
+  <tr><td>PLC 1x64</td><td>21,5</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>4. Практичні розрахунки оптичного бюджету (Створення мережі)</h2>
+
+<p>Загальна кількість потенційних абонентів: <strong>132</strong>.
+Для забезпечення такої кількості абонентів ми використаємо <strong>4 оптичні волокна</strong> (корені дерева). Кожне волокно буде обслуговувати певний географічний сектор (вулицю).</p>
+
+<h3>3.1. ВОЛОКНО 1: вул. Торгова (16 абонентів, FOB1 – FOB2)</h3>
+
+<p>Для підключення абонентів по вул. Торгова (16 аб.) та вул. Перемоги (36 аб.) ми використаємо одне оптичне волокно від OLT, яке знаходиться географічно близько. Сигнал з OLT (+2 дБ) ми розділимо за допомогою зварного розгалужувача <strong>FBT 30/70</strong>. Розподіл потужності обґрунтовано кількістю абонентів: Торгова з 16 абонентами отримає 30% сигналу (відвід), а Перемоги з 36 абонентами — 70% транзиту.</p>
+
+<p>Відповідно до таблиці 3.1, маємо такі вхідні сигнали на вулиці:
+- На вул. Торгову піде: 2 - 5,39 = <strong>-3,39 дБ</strong>.
+- На вул. Перемоги транзитом: 2 - 1,56 = <strong>0,44 дБ</strong>.</p>
+
+<p>Завдання по вул. Торговій — розподілити -3,39 дБ сигналу між 16 абонентами. Тобто створити два бокси FOB з планарними дільниками PLC 1x8 у кожному. Для подальшого проходу волокна від FOB1 до FOB2 використаємо дільник <strong>FBT 50/50</strong> (порівну на поточний і наступний вузол).</p>
+
+<div style="text-align:center; margin: 15pt 0;">
+  <div style="border: 1.5pt dashed #B0C4DE; padding: 10pt; border-radius: 6px; margin-bottom: 8pt;">
+    <img src="assets/lection3/fig_3_3_torgova_map.png" alt="Рис. 3.3. Карта вул. Торгова" style="max-width: 100%; border: 1px solid #ddd; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+  </div>
+  <p class="image-caption">Рис. 3.3. Карта вул. Торгова</p>
+</div>
+
+<div class="mermaid-wrapper">
+  <div class="mermaid">
+graph LR
+    classDef olt fill:#0d6efd,stroke:#094eab,stroke-width:2px,color:#fff
+    classDef tran fill:#198754,stroke:#115c38,stroke-width:2px,color:#fff
+    classDef fbt fill:#fd7e14,stroke:#cf660f,stroke-width:2px,color:#fff
+    classDef plc fill:#6f42c1,stroke:#552d9b,stroke-width:2px,color:#fff
+    classDef onu fill:#dc3545,stroke:#b02a37,stroke-width:2px,color:#fff
+
+    OLT(("OLT<br>+2 дБ")):::olt ---|Волокно 1| FBTMAIN{"FBT<br>30(X)/70(Y)"}:::fbt
+    FBTMAIN ---|X: -3,39| FOB1[FOB 1]
+    FBTMAIN ---|Y: +0,44| VOL2(("На вул.<br>Перемоги")):::tran
+    
+    subgraph sg1 ["Оптична Шина - вул. Торгова"]
+        direction LR
+        FOB1 --- FBT1{"FBT<br>50(X)/50(Y)"}:::fbt
+        FBT1 ---|Y: -6,58| FOB2[FOB 2]
+        FOB2 --- PLC2["PLC<br>1x8"]:::plc --- ONU2[8 ONU]:::onu
+        
+        FBT1 ---|X: -6,56| PLC1["PLC<br>1x8"]:::plc --- ONU1[8 ONU]:::onu
+    end
+  </div>
+</div>
+<p class="image-caption">Рис. 3.4. Оптична Шина — вул. Торгова</p>
+
+<p class="table-caption"><strong>Таблиця 3.3.</strong> Розрахунок оптичного бюджету (Волокно 1 – вул. Торгова)</p>
+<div class="table-responsive">
+<table class="sim-table">
+  <tr>
+    <th style="width:8%">Вузол</th>
+    <th style="width:14%">Входи (IN)</th>
+    <th style="width:24%">Сплітери (FBT)</th>
+    <th style="width:24%">Виходи (OUT)</th>
+    <th style="width:17%">Абоненти (PLC)</th>
+    <th style="width:13%">На ONU</th>
+  </tr>
+  <tr>
+    <td rowspan="3"><strong>FOB 1</strong></td>
+    <td><span class="st-sub">Від OLT:</span><br><b class="sym-in"><span class="sym-in">● </span>-3,39 дБ</b></td>
+    <td><span class="sym-fbt">◆ </span><strong>FBT 50/50</strong><br><span class="st-sub">(X -3,17 / Y -3,19)</span></td>
+    <td><span class="st-sub">Відвід X (на PLC):</span><br><b class="sym-out"><span class="sym-out">● </span>-6,56 дБ</b><hr class="st-hr"><span class="st-sub">Транзит Y:</span><br><b class="sym-tran"><span class="sym-tran">● </span>-6,58 дБ</b></td>
+    <td><span class="sym-plc">■ </span><strong>PLC 1x8</strong> <span class="st-sub">(-10,7)</span><br><em>Порти 1-8:</em><br><strong>-17,26 дБ</strong></td>
+    <td><b class="sym-out"><span class="sym-out">■ </span>-17,76 дБ</b><br><span class="st-sub">(-0,5 кон.)</span></td>
+  </tr>
+  <tr class="st-calc">
+    <td colspan="3"><span class="sym-in">● </span>-3,39 &minus; <span class="sym-fbt">◆ </span>X (3,17) = <span class="sym-out">● </span><b>-6,56 дБ</b></td>
+    <td colspan="2"><span class="sym-in">● </span>-3,39 &minus; <span class="sym-fbt">◆ </span>Y (3,19) = <span class="sym-tran">● </span><b>-6,58 дБ</b></td>
+  </tr>
+  <tr class="st-calc">
+    <td colspan="3"><span class="sym-out">● </span>-6,56 &minus; <span class="sym-plc">■ </span>PLC 1x8 (10,7) = <b>-17,26 дБ</b></td>
+    <td colspan="2"><span class="sym-plc">■ </span>-17,26 &minus; конектор 0,5 = <span class="sym-out">■ </span><b>-17,76 дБ</b></td>
+  </tr>
+  <tr>
+    <td rowspan="3"><strong>FOB 2</strong></td>
+    <td><span class="st-sub">Від FOB 1:</span><br><b class="sym-tran"><span class="sym-tran">● </span>-6,58 дБ</b></td>
+    <td><span class="st-sub">Відсутній (кінцева муфта)</span></td>
+    <td><span class="st-sub">Відвід X (на PLC):</span><br><b class="sym-out"><span class="sym-out">● </span>-6,58 дБ</b><hr class="st-hr"><span class="st-sub">Транзит Y:</span><br><em>немає</em></td>
+    <td><span class="sym-plc">■ </span><strong>PLC 1x8</strong> <span class="st-sub">(-10,7)</span><br><em>Порти 1-8:</em><br><strong>-17,28 дБ</strong></td>
+    <td><b class="sym-out"><span class="sym-out">■ </span>-17,78 дБ</b><br><span class="st-sub">(-0,5 кон.)</span></td>
+  </tr>
+  <tr class="st-calc">
+    <td colspan="3"><span class="sym-tran">● </span>Вхід -6,58 &rarr; напряму на PLC (без FBT)</td>
+    <td colspan="2"><span class="sym-out">● </span>На PLC: <b>-6,58 дБ</b></td>
+  </tr>
+  <tr class="st-calc">
+    <td colspan="3"><span class="sym-out">● </span>-6,58 &minus; <span class="sym-plc">■ </span>PLC 1x8 (10,7) = <b>-17,28 дБ</b></td>
+    <td colspan="2"><span class="sym-plc">■ </span>-17,28 &minus; конектор 0,5 = <span class="sym-out">■ </span><b>-17,78 дБ</b></td>
+  </tr>
+</table>
+</div>
+
+<h3>3.2. ВОЛОКНО 2: вул. Перемоги (36 абонентів, FOB3 – FOB7)</h3>
+
+<p>Вулиця Перемоги має видовжену географію (лінійне поселення), тому ми будуємо на ній класичну топологію <strong>"Шина"</strong> з використанням каскадування зварних FBT дільників у кожному оптичному боксі, відщипуючи необхідну частку сигналу і передаючи велику потужність далі в лінію.</p>
+
+<p>Як ми розрахували раніше, загальний вхідний сигнал на цю гілку становить <strong>0,44 дБ</strong> (після первинного FBT 30/70).</p>
+
+<p>Оскільки абонентів 36, нам необхідно розмістити 4 сплітери PLC 1x8 (на 32 абоненти) та 1 сплітер PLC 1x4 (на 4 абоненти на кінці вулиці). В усіх вузлах до FOB7 ми застосовуємо відводи <strong>FBT 20/80</strong> (20% на свій бокс для живлення PLC, 80% — транзитом для сусідів далі).</p>
+
+<div style="text-align:center; margin: 15pt 0;">
+  <div style="border: 1.5pt dashed #B0C4DE; padding: 10pt; border-radius: 6px; margin-bottom: 8pt;">
+    <img src="assets/lection3/fig_3_5_peremohy_map.png" alt="Рис. 3.5. Карта вул. Перемоги" style="max-width: 100%; border: 1px solid #ddd; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+  </div>
+  <p class="image-caption">Рис. 3.5. Карта вул. Перемоги</p>
+</div>
+
+<div class="mermaid-wrapper">
+  <div class="mermaid">
+graph LR
+    classDef tran fill:#198754,stroke:#115c38,stroke-width:2px,color:#fff;
+    classDef fbt fill:#fd7e14,stroke:#cf660f,stroke-width:2px,color:#fff;
+    classDef plc fill:#6f42c1,stroke:#552d9b,stroke-width:2px,color:#fff;
+    classDef onu fill:#dc3545,stroke:#b02a37,stroke-width:2px,color:#fff;
+
+    IN(("Вхід<br>+0,44")):::tran --- FOB3[FOB 3]
+    subgraph Вулиця Перемоги [Оптична Шина - вул. Перемоги]
+        direction LR
+        FOB3 --- FBT3{"FBT<br>20(X)/80(Y)"}:::fbt
+        FBT3 ---|Y: -0,62| FOB4[FOB 4] --- FBT4{"FBT<br>20(X)/80(Y)"}:::fbt
+        FBT4 ---|Y: -1,68| FOB5[FOB 5] --- FBT5{"FBT<br>20(X)/80(Y)"}:::fbt
+        FBT5 ---|Y: -2,74| FOB6[FOB 6] --- FBT6{"FBT<br>20(X)/80(Y)"}:::fbt
+        FBT6 ---|Y: -3,80| FOB7[FOB 7] --- FBT7{"FBT<br>20(X)/80(Y)"}:::fbt
+        FBT7 ---|Y: -4,86| OUT((Резерв)):::tran
+        
+        FBT3 ---|X: -6,67| PLC3["PLC<br>1x8"]:::plc --- ONU3[8 ONU]:::onu
+        FBT4 ---|X: -7,73| PLC4["PLC<br>1x8"]:::plc --- ONU4[8 ONU]:::onu
+        FBT5 ---|X: -8,79| PLC5["PLC<br>1x8"]:::plc --- ONU5[8 ONU]:::onu
+        FBT6 ---|X: -9,85| PLC6["PLC<br>1x8"]:::plc --- ONU6[8 ONU]:::onu
+        FBT7 ---|X: -10,91| PLC7["PLC<br>1x4"]:::plc --- ONU7[4 ONU]:::onu
+    end
+  </div>
+</div>
+<p class="image-caption">Рис. 3.6. Оптична Шина — вул. Перемоги</p>
+
+<p class="table-caption"><strong>Таблиця 3.4.</strong> Розрахунок оптичного бюджету (Волокно 2 – вул. Перемоги)</p>
+<div class="table-responsive">
+<table class="sim-table">
+  <tr>
+    <th style="width:8%">Вузол</th>
+    <th style="width:14%">Входи (IN)</th>
+    <th style="width:24%">Сплітери (FBT)</th>
+    <th style="width:24%">Виходи (OUT)</th>
+    <th style="width:17%">Абоненти (PLC)</th>
+    <th style="width:13%">На ONU</th>
+  </tr>
+  <tr>
+    <td rowspan="3"><strong>FOB 3</strong></td>
+    <td><span class="st-sub">Від OLT:</span><br><b class="sym-in"><span class="sym-in">● </span>0,44 дБ</b></td>
+    <td><span class="sym-fbt">◆ </span><strong>FBT 20/80</strong><br><span class="st-sub">(X -7,11 / Y -1,06)</span></td>
+    <td><span class="st-sub">Відвід X (на PLC):</span><br><b class="sym-out"><span class="sym-out">● </span>-6,67 дБ</b><hr class="st-hr"><span class="st-sub">Транзит Y:</span><br><b class="sym-tran"><span class="sym-tran">● </span>-0,62 дБ</b></td>
+    <td><span class="sym-plc">■ </span><strong>PLC 1x8</strong> <span class="st-sub">(-10,7)</span><br><em>Порти 1-8:</em><br><strong>-17,37 дБ</strong></td>
+    <td><b class="sym-out"><span class="sym-out">■ </span>-17,87 дБ</b><br><span class="st-sub">(-0,5 кон.)</span></td>
+  </tr>
+  <tr class="st-calc">
+    <td colspan="3"><span class="sym-in">● </span>0,44 &minus; <span class="sym-fbt">◆ </span>X (7,11) = <span class="sym-out">● </span><b>-6,67 дБ</b></td>
+    <td colspan="2"><span class="sym-in">● </span>0,44 &minus; <span class="sym-fbt">◆ </span>Y (1,06) = <span class="sym-tran">● </span><b>-0,62 дБ</b></td>
+  </tr>
+  <tr class="st-calc">
+    <td colspan="3"><span class="sym-out">● </span>-6,67 &minus; <span class="sym-plc">■ </span>PLC 1x8 (10,7) = <b>-17,37 дБ</b></td>
+    <td colspan="2"><span class="sym-plc">■ </span>-17,37 &minus; конектор 0,5 = <span class="sym-out">■ </span><b>-17,87 дБ</b></td>
+  </tr>
+  <tr>
+    <td rowspan="3"><strong>FOB 4</strong></td>
+    <td><span class="st-sub">Від FOB 3:</span><br><b class="sym-tran"><span class="sym-tran">● </span>-0,62 дБ</b></td>
+    <td><span class="sym-fbt">◆ </span><strong>FBT 20/80</strong><br><span class="st-sub">(X -7,11 / Y -1,06)</span></td>
+    <td><span class="st-sub">Відвід X (на PLC):</span><br><b class="sym-out"><span class="sym-out">● </span>-7,73 дБ</b><hr class="st-hr"><span class="st-sub">Транзит Y:</span><br><b class="sym-tran"><span class="sym-tran">● </span>-1,68 дБ</b></td>
+    <td><span class="sym-plc">■ </span><strong>PLC 1x8</strong> <span class="st-sub">(-10,7)</span><br><em>Порти 1-8:</em><br><strong>-18,43 дБ</strong></td>
+    <td><b class="sym-out"><span class="sym-out">■ </span>-18,93 дБ</b><br><span class="st-sub">(-0,5 кон.)</span></td>
+  </tr>
+  <tr class="st-calc">
+    <td colspan="3"><span class="sym-tran">● </span>-0,62 &minus; <span class="sym-fbt">◆ </span>X (7,11) = <span class="sym-out">● </span><b>-7,73 дБ</b></td>
+    <td colspan="2"><span class="sym-tran">● </span>-0,62 &minus; <span class="sym-fbt">◆ </span>Y (1,06) = <span class="sym-tran">● </span><b>-1,68 дБ</b></td>
+  </tr>
+  <tr class="st-calc">
+    <td colspan="3"><span class="sym-out">● </span>-7,73 &minus; <span class="sym-plc">■ </span>PLC 1x8 (10,7) = <b>-18,43 дБ</b></td>
+    <td colspan="2"><span class="sym-plc">■ </span>-18,43 &minus; конектор 0,5 = <span class="sym-out">■ </span><b>-18,93 дБ</b></td>
+  </tr>
+  <tr>
+    <td rowspan="3"><strong>FOB 5</strong></td>
+    <td><span class="st-sub">Від FOB 4:</span><br><b class="sym-tran"><span class="sym-tran">● </span>-1,68 дБ</b></td>
+    <td><span class="sym-fbt">◆ </span><strong>FBT 20/80</strong><br><span class="st-sub">(X -7,11 / Y -1,06)</span></td>
+    <td><span class="st-sub">Відвід X (на PLC):</span><br><b class="sym-out"><span class="sym-out">● </span>-8,79 дБ</b><hr class="st-hr"><span class="st-sub">Транзит Y:</span><br><b class="sym-tran"><span class="sym-tran">● </span>-2,74 дБ</b></td>
+    <td><span class="sym-plc">■ </span><strong>PLC 1x8</strong> <span class="st-sub">(-10,7)</span><br><em>Порти 1-8:</em><br><strong>-19,49 дБ</strong></td>
+    <td><b class="sym-out"><span class="sym-out">■ </span>-19,99 дБ</b><br><span class="st-sub">(-0,5 кон.)</span></td>
+  </tr>
+  <tr class="st-calc">
+    <td colspan="3"><span class="sym-tran">● </span>-1,68 &minus; <span class="sym-fbt">◆ </span>X (7,11) = <span class="sym-out">● </span><b>-8,79 дБ</b></td>
+    <td colspan="2"><span class="sym-tran">● </span>-1,68 &minus; <span class="sym-fbt">◆ </span>Y (1,06) = <span class="sym-tran">● </span><b>-2,74 дБ</b></td>
+  </tr>
+  <tr class="st-calc">
+    <td colspan="3"><span class="sym-out">● </span>-8,79 &minus; <span class="sym-plc">■ </span>PLC 1x8 (10,7) = <b>-19,49 дБ</b></td>
+    <td colspan="2"><span class="sym-plc">■ </span>-19,49 &minus; конектор 0,5 = <span class="sym-out">■ </span><b>-19,99 дБ</b></td>
+  </tr>
+  <tr>
+    <td rowspan="3"><strong>FOB 6</strong></td>
+    <td><span class="st-sub">Від FOB 5:</span><br><b class="sym-tran"><span class="sym-tran">● </span>-2,74 дБ</b></td>
+    <td><span class="sym-fbt">◆ </span><strong>FBT 20/80</strong><br><span class="st-sub">(X -7,11 / Y -1,06)</span></td>
+    <td><span class="st-sub">Відвід X (на PLC):</span><br><b class="sym-out"><span class="sym-out">● </span>-9,85 дБ</b><hr class="st-hr"><span class="st-sub">Транзит Y:</span><br><b class="sym-tran"><span class="sym-tran">● </span>-3,8 дБ</b></td>
+    <td><span class="sym-plc">■ </span><strong>PLC 1x8</strong> <span class="st-sub">(-10,7)</span><br><em>Порти 1-8:</em><br><strong>-20,55 дБ</strong></td>
+    <td><b class="sym-out"><span class="sym-out">■ </span>-21,05 дБ</b><br><span class="st-sub">(-0,5 кон.)</span></td>
+  </tr>
+  <tr class="st-calc">
+    <td colspan="3"><span class="sym-tran">● </span>-2,74 &minus; <span class="sym-fbt">◆ </span>X (7,11) = <span class="sym-out">● </span><b>-9,85 дБ</b></td>
+    <td colspan="2"><span class="sym-tran">● </span>-2,74 &minus; <span class="sym-fbt">◆ </span>Y (1,06) = <span class="sym-tran">● </span><b>-3,8 дБ</b></td>
+  </tr>
+  <tr class="st-calc">
+    <td colspan="3"><span class="sym-out">● </span>-9,85 &minus; <span class="sym-plc">■ </span>PLC 1x8 (10,7) = <b>-20,55 дБ</b></td>
+    <td colspan="2"><span class="sym-plc">■ </span>-20,55 &minus; конектор 0,5 = <span class="sym-out">■ </span><b>-21,05 дБ</b></td>
+  </tr>
+  <tr>
+    <td rowspan="3"><strong>FOB 7</strong></td>
+    <td><span class="st-sub">Від FOB 6:</span><br><b class="sym-tran"><span class="sym-tran">● </span>-3,8 дБ</b></td>
+    <td><span class="sym-fbt">◆ </span><strong>FBT 20/80</strong><br><span class="st-sub">(X -7,11 / Y -1,06)</span></td>
+    <td><span class="st-sub">Відвід X (на PLC):</span><br><b class="sym-out"><span class="sym-out">● </span>-10,91 дБ</b><hr class="st-hr"><span class="st-sub">Транзит Y:</span><br><b class="sym-tran"><span class="sym-tran">● </span>-4,86 дБ</b></td>
+    <td><span class="sym-plc">■ </span><strong>PLC 1x4</strong> <span class="st-sub">(-7,4)</span><br><em>Порти 1-4:</em><br><strong>-18,31 дБ</strong></td>
+    <td><b class="sym-out"><span class="sym-out">■ </span>-18,81 дБ</b><br><span class="st-sub">(-0,5 кон.)</span></td>
+  </tr>
+  <tr class="st-calc">
+    <td colspan="3"><span class="sym-tran">● </span>-3,8 &minus; <span class="sym-fbt">◆ </span>X (7,11) = <span class="sym-out">● </span><b>-10,91 дБ</b></td>
+    <td colspan="2"><span class="sym-tran">● </span>-3,8 &minus; <span class="sym-fbt">◆ </span>Y (1,06) = <span class="sym-tran">● </span><b>-4,86 дБ</b></td>
+  </tr>
+  <tr class="st-calc">
+    <td colspan="3"><span class="sym-out">● </span>-10,91 &minus; <span class="sym-plc">■ </span>PLC 1x4 (7,4) = <b>-18,31 дБ</b></td>
+    <td colspan="2"><span class="sym-plc">■ </span>-18,31 &minus; конектор 0,5 = <span class="sym-out">■ </span><b>-18,81 дБ</b></td>
+  </tr>
+</table>
+</div>
+<div class="note">
+  <p><em>Примітка:</em> у кінцевому FOB 7 ми використали FBT 20/80 (і залишили -4,86 дБ для магістрального виходу), щоб мати теоретичну можливість прокласти транзит з цієї муфти для майбутньої забудови кварталу в перспективі.</p>
+</div>
+
+<h3>3.3. ВОЛОКНА 3 ТА 4: вул. Райдужна та пров. Матросова (80 абонентів, FOB8 – FOB17)</h3>
+
+<p>Перейдемо до проектування мережі по вул. Райдужній, вул. Кримській та пров. Матросова. Враховуючи географічну близькість, ці ділянки будуть отримувати сигнал із єдиного джерела (наприклад, окремого SFP модуля з потужністю +2 дБ). Оскільки нам потрібно поділити його на два рівнозначні напрямки (по 40 абонентів на кожен), ми використовуємо дільник <strong>FBT 50/50</strong> безпосередньо у магістральній муфті поблизу центру кварталу. </p>
+
+<p>Відповідно:
+- Гілка "Райдужна" (Волокно 3) отримає: 2 - 3,17 = <strong>-1,17 дБ</strong>.
+- Гілка "Матросова" (Волокно 4) отримає: 2 - 3,19 = <strong>-1,19 дБ</strong>.</p>
+
+<div style="text-align:center; margin: 15pt 0;">
+  <div style="border: 1.5pt dashed #B0C4DE; padding: 10pt; border-radius: 6px; margin-bottom: 8pt;">
+    <img src="assets/lection3/fig_3_7_raiduzna_map.png" alt="Рис. 3.7. Карта вул. Райдужна" style="max-width: 100%; border: 1px solid #ddd; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+  </div>
+  <p class="image-caption">Рис. 3.7. Карта вул. Райдужна та частини вул. Кримської</p>
+</div>
+
+<div class="mermaid-wrapper">
+  <div class="mermaid">
+graph LR
+    classDef olt fill:#0d6efd,stroke:#094eab,stroke-width:2px,color:#fff
+    classDef tran fill:#198754,stroke:#115c38,stroke-width:2px,color:#fff
+    classDef fbt fill:#fd7e14,stroke:#cf660f,stroke-width:2px,color:#fff
+    classDef plc fill:#6f42c1,stroke:#552d9b,stroke-width:2px,color:#fff
+    classDef onu fill:#dc3545,stroke:#b02a37,stroke-width:2px,color:#fff
+
+    OLT2(("OLT<br>+2 дБ")):::olt ---|Волокна 3/4| FBTM{"FBT<br>50(X)/50(Y)"}:::fbt
+    FBTM ---|X: -1,17| FOB8[FOB 8]
+    FBTM ---|Y: -1,19| VOL4(("На пров.<br>Матросова")):::tran
+    
+    subgraph sg3 ["Оптична Шина - вул. Райдужна"]
+        direction LR
+        FOB8 --- FBT8{"FBT<br>20(X)/80(Y)"}:::fbt
+        FBT8 ---|Y: -2,23| FOB9[FOB 9] --- FBT9{"FBT<br>20(X)/80(Y)"}:::fbt
+        FBT9 ---|Y: -3,29| FOB10[FOB 10] --- FBT10{"FBT<br>20(X)/80(Y)"}:::fbt
+        FBT10 ---|Y: -4,35| FOB11[FOB 11] --- FBT11{"FBT<br>20(X)/80(Y)"}:::fbt
+        FBT11 ---|Y: -5,41| FOB12[FOB 12] --- PLC12["PLC<br>1x8"]:::plc --- ONU12[8 ONU]:::onu
+        
+        FBT8 ---|X: -8,28| PLC8["PLC<br>1x8"]:::plc --- ONU8[8 ONU]:::onu
+        FBT9 ---|X: -9,34| PLC9["PLC<br>1x8"]:::plc --- ONU9[8 ONU]:::onu
+        FBT10 ---|X: -10,40| PLC10["PLC<br>1x8"]:::plc --- ONU10[8 ONU]:::onu
+        FBT11 ---|X: -11,46| PLC11["PLC<br>1x8"]:::plc --- ONU11[8 ONU]:::onu
+    end
+  </div>
+</div>
+<p class="image-caption">Рис. 3.8. Оптична Шина — вул. Райдужна</p>
+
+<p class="table-caption"><strong>Таблиця 3.5.</strong> Розрахунок оптичного бюджету (Волокно 3 – вул. Райдужна, 40 абонентів)</p>
+<div class="table-responsive">
+<table class="sim-table">
+  <tr>
+    <th style="width:8%">Вузол</th>
+    <th style="width:14%">Входи (IN)</th>
+    <th style="width:24%">Сплітери (FBT)</th>
+    <th style="width:24%">Виходи (OUT)</th>
+    <th style="width:17%">Абоненти (PLC)</th>
+    <th style="width:13%">На ONU</th>
+  </tr>
+  <tr>
+    <td rowspan="3"><strong>FOB 8</strong></td>
+    <td><span class="st-sub">Від OLT:</span><br><b class="sym-in"><span class="sym-in">● </span>-1,17 дБ</b></td>
+    <td><span class="sym-fbt">◆ </span><strong>FBT 20/80</strong><br><span class="st-sub">(X -7,11 / Y -1,06)</span></td>
+    <td><span class="st-sub">Відвід X (на PLC):</span><br><b class="sym-out"><span class="sym-out">● </span>-8,28 дБ</b><hr class="st-hr"><span class="st-sub">Транзит Y:</span><br><b class="sym-tran"><span class="sym-tran">● </span>-2,23 дБ</b></td>
+    <td><span class="sym-plc">■ </span><strong>PLC 1x8</strong> <span class="st-sub">(-10,7)</span><br><em>Порти 1-8:</em><br><strong>-18,98 дБ</strong></td>
+    <td><b class="sym-out"><span class="sym-out">■ </span>-19,48 дБ</b><br><span class="st-sub">(-0,5 кон.)</span></td>
+  </tr>
+  <tr class="st-calc">
+    <td colspan="3"><span class="sym-in">● </span>-1,17 &minus; <span class="sym-fbt">◆ </span>X (7,11) = <span class="sym-out">● </span><b>-8,28 дБ</b></td>
+    <td colspan="2"><span class="sym-in">● </span>-1,17 &minus; <span class="sym-fbt">◆ </span>Y (1,06) = <span class="sym-tran">● </span><b>-2,23 дБ</b></td>
+  </tr>
+  <tr class="st-calc">
+    <td colspan="3"><span class="sym-out">● </span>-8,28 &minus; <span class="sym-plc">■ </span>PLC 1x8 (10,7) = <b>-18,98 дБ</b></td>
+    <td colspan="2"><span class="sym-plc">■ </span>-18,98 &minus; конектор 0,5 = <span class="sym-out">■ </span><b>-19,48 дБ</b></td>
+  </tr>
+  <tr>
+    <td rowspan="3"><strong>FOB 9</strong></td>
+    <td><span class="st-sub">Від FOB 8:</span><br><b class="sym-tran"><span class="sym-tran">● </span>-2,23 дБ</b></td>
+    <td><span class="sym-fbt">◆ </span><strong>FBT 20/80</strong><br><span class="st-sub">(X -7,11 / Y -1,06)</span></td>
+    <td><span class="st-sub">Відвід X (на PLC):</span><br><b class="sym-out"><span class="sym-out">● </span>-9,34 дБ</b><hr class="st-hr"><span class="st-sub">Транзит Y:</span><br><b class="sym-tran"><span class="sym-tran">● </span>-3,29 дБ</b></td>
+    <td><span class="sym-plc">■ </span><strong>PLC 1x8</strong> <span class="st-sub">(-10,7)</span><br><em>Порти 1-8:</em><br><strong>-20,04 дБ</strong></td>
+    <td><b class="sym-out"><span class="sym-out">■ </span>-20,54 дБ</b><br><span class="st-sub">(-0,5 кон.)</span></td>
+  </tr>
+  <tr class="st-calc">
+    <td colspan="3"><span class="sym-tran">● </span>-2,23 &minus; <span class="sym-fbt">◆ </span>X (7,11) = <span class="sym-out">● </span><b>-9,34 дБ</b></td>
+    <td colspan="2"><span class="sym-tran">● </span>-2,23 &minus; <span class="sym-fbt">◆ </span>Y (1,06) = <span class="sym-tran">● </span><b>-3,29 дБ</b></td>
+  </tr>
+  <tr class="st-calc">
+    <td colspan="3"><span class="sym-out">● </span>-9,34 &minus; <span class="sym-plc">■ </span>PLC 1x8 (10,7) = <b>-20,04 дБ</b></td>
+    <td colspan="2"><span class="sym-plc">■ </span>-20,04 &minus; конектор 0,5 = <span class="sym-out">■ </span><b>-20,54 дБ</b></td>
+  </tr>
+  <tr>
+    <td rowspan="3"><strong>FOB 10</strong></td>
+    <td><span class="st-sub">Від FOB 9:</span><br><b class="sym-tran"><span class="sym-tran">● </span>-3,29 дБ</b></td>
+    <td><span class="sym-fbt">◆ </span><strong>FBT 20/80</strong><br><span class="st-sub">(X -7,11 / Y -1,06)</span></td>
+    <td><span class="st-sub">Відвід X (на PLC):</span><br><b class="sym-out"><span class="sym-out">● </span>-10,4 дБ</b><hr class="st-hr"><span class="st-sub">Транзит Y:</span><br><b class="sym-tran"><span class="sym-tran">● </span>-4,35 дБ</b></td>
+    <td><span class="sym-plc">■ </span><strong>PLC 1x8</strong> <span class="st-sub">(-10,7)</span><br><em>Порти 1-8:</em><br><strong>-21,1 дБ</strong></td>
+    <td><b class="sym-out"><span class="sym-out">■ </span>-21,6 дБ</b><br><span class="st-sub">(-0,5 кон.)</span></td>
+  </tr>
+  <tr class="st-calc">
+    <td colspan="3"><span class="sym-tran">● </span>-3,29 &minus; <span class="sym-fbt">◆ </span>X (7,11) = <span class="sym-out">● </span><b>-10,4 дБ</b></td>
+    <td colspan="2"><span class="sym-tran">● </span>-3,29 &minus; <span class="sym-fbt">◆ </span>Y (1,06) = <span class="sym-tran">● </span><b>-4,35 дБ</b></td>
+  </tr>
+  <tr class="st-calc">
+    <td colspan="3"><span class="sym-out">● </span>-10,4 &minus; <span class="sym-plc">■ </span>PLC 1x8 (10,7) = <b>-21,1 дБ</b></td>
+    <td colspan="2"><span class="sym-plc">■ </span>-21,1 &minus; конектор 0,5 = <span class="sym-out">■ </span><b>-21,6 дБ</b></td>
+  </tr>
+  <tr>
+    <td rowspan="3"><strong>FOB 11</strong></td>
+    <td><span class="st-sub">Від FOB 10:</span><br><b class="sym-tran"><span class="sym-tran">● </span>-4,35 дБ</b></td>
+    <td><span class="sym-fbt">◆ </span><strong>FBT 20/80</strong><br><span class="st-sub">(X -7,11 / Y -1,06)</span></td>
+    <td><span class="st-sub">Відвід X (на PLC):</span><br><b class="sym-out"><span class="sym-out">● </span>-11,46 дБ</b><hr class="st-hr"><span class="st-sub">Транзит Y:</span><br><b class="sym-tran"><span class="sym-tran">● </span>-5,41 дБ</b></td>
+    <td><span class="sym-plc">■ </span><strong>PLC 1x8</strong> <span class="st-sub">(-10,7)</span><br><em>Порти 1-8:</em><br><strong>-22,16 дБ</strong></td>
+    <td><b class="sym-out"><span class="sym-out">■ </span>-22,66 дБ</b><br><span class="st-sub">(-0,5 кон.)</span></td>
+  </tr>
+  <tr class="st-calc">
+    <td colspan="3"><span class="sym-tran">● </span>-4,35 &minus; <span class="sym-fbt">◆ </span>X (7,11) = <span class="sym-out">● </span><b>-11,46 дБ</b></td>
+    <td colspan="2"><span class="sym-tran">● </span>-4,35 &minus; <span class="sym-fbt">◆ </span>Y (1,06) = <span class="sym-tran">● </span><b>-5,41 дБ</b></td>
+  </tr>
+  <tr class="st-calc">
+    <td colspan="3"><span class="sym-out">● </span>-11,46 &minus; <span class="sym-plc">■ </span>PLC 1x8 (10,7) = <b>-22,16 дБ</b></td>
+    <td colspan="2"><span class="sym-plc">■ </span>-22,16 &minus; конектор 0,5 = <span class="sym-out">■ </span><b>-22,66 дБ</b></td>
+  </tr>
+  <tr>
+    <td rowspan="3"><strong>FOB 12</strong></td>
+    <td><span class="st-sub">Від FOB 11:</span><br><b class="sym-tran"><span class="sym-tran">● </span>-5,41 дБ</b></td>
+    <td><span class="st-sub">Відсутній (кінцева муфта)</span></td>
+    <td><span class="st-sub">Відвід X (на PLC):</span><br><b class="sym-out"><span class="sym-out">● </span>-5,41 дБ</b><hr class="st-hr"><span class="st-sub">Транзит Y:</span><br><em>немає</em></td>
+    <td><span class="sym-plc">■ </span><strong>PLC 1x8</strong> <span class="st-sub">(-10,7)</span><br><em>Порти 1-8:</em><br><strong>-16,11 дБ</strong></td>
+    <td><b class="sym-out"><span class="sym-out">■ </span>-16,61 дБ</b><br><span class="st-sub">(-0,5 кон.)</span></td>
+  </tr>
+  <tr class="st-calc">
+    <td colspan="3"><span class="sym-tran">● </span>Вхід -5,41 &rarr; напряму на PLC (без FBT)</td>
+    <td colspan="2"><span class="sym-out">● </span>На PLC: <b>-5,41 дБ</b></td>
+  </tr>
+  <tr class="st-calc">
+    <td colspan="3"><span class="sym-out">● </span>-5,41 &minus; <span class="sym-plc">■ </span>PLC 1x8 (10,7) = <b>-16,11 дБ</b></td>
+    <td colspan="2"><span class="sym-plc">■ </span>-16,11 &minus; конектор 0,5 = <span class="sym-out">■ </span><b>-16,61 дБ</b></td>
+  </tr>
+</table>
+</div>
+
+<div style="text-align:center; margin: 15pt 0;">
+  <div style="border: 1.5pt dashed #B0C4DE; padding: 10pt; border-radius: 6px; margin-bottom: 8pt;">
+    <img src="assets/lection3/fig_3_9_matrosova_map.png" alt="Рис. 3.9. Карта пров. Матросова" style="max-width: 100%; border: 1px solid #ddd; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+  </div>
+  <p class="image-caption">Рис. 3.9. Карта пров. Матросова та вул. Кримської</p>
+</div>
+
+<div class="mermaid-wrapper">
+  <div class="mermaid">
+graph LR
+    classDef tran fill:#0d6efd,stroke:#094eab,stroke-width:2px,color:#fff;
+    classDef fbt fill:#fd7e14,stroke:#cf660f,stroke-width:2px,color:#fff;
+    classDef plc fill:#6f42c1,stroke:#552d9b,stroke-width:2px,color:#fff;
+    classDef onu fill:#dc3545,stroke:#b02a37,stroke-width:2px,color:#fff;
+
+    IN2(("Вхід<br>-1,19")):::tran --- FOB13[FOB 13]
+    subgraph Провулок Матросова [Оптична Шина - пров. Матросова]
+        direction LR
+        FOB13 --- FBT13{"FBT<br>20(X)/80(Y)"}:::fbt
+        FBT13 ---|Y: -2,25| FOB14[FOB 14] --- FBT14{"FBT<br>20(X)/80(Y)"}:::fbt
+        FBT14 ---|Y: -3,31| FOB15[FOB 15] --- FBT15{"FBT<br>20(X)/80(Y)"}:::fbt
+        FBT15 ---|Y: -4,37| FOB16[FOB 16] --- FBT16{"FBT<br>20(X)/80(Y)"}:::fbt
+        FBT16 ---|Y: -5,43| FOB17[FOB 17] --- PLC17["PLC<br>1x8"]:::plc --- ONU17[8 ONU]:::onu
+        
+        FBT13 ---|X: -8,30| PLC13["PLC<br>1x8"]:::plc --- ONU13[8 ONU]:::onu
+        FBT14 ---|X: -9,36| PLC14["PLC<br>1x8"]:::plc --- ONU14[8 ONU]:::onu
+        FBT15 ---|X: -10,42| PLC15["PLC<br>1x8"]:::plc --- ONU15[8 ONU]:::onu
+        FBT16 ---|X: -11,48| PLC16["PLC<br>1x8"]:::plc --- ONU16[8 ONU]:::onu
+    end
+  </div>
+</div>
+<p class="image-caption">Рис. 3.10. Оптична Шина — пров. Матросова</p>
+
+<p class="table-caption"><strong>Таблиця 3.6.</strong> Розрахунок оптичного бюджету (Волокно 4 – пров. Матросова, 40 абонентів)</p>
+<div class="table-responsive">
+<table class="sim-table">
+  <tr>
+    <th style="width:8%">Вузол</th>
+    <th style="width:14%">Входи (IN)</th>
+    <th style="width:24%">Сплітери (FBT)</th>
+    <th style="width:24%">Виходи (OUT)</th>
+    <th style="width:17%">Абоненти (PLC)</th>
+    <th style="width:13%">На ONU</th>
+  </tr>
+  <tr>
+    <td rowspan="3"><strong>FOB 13</strong></td>
+    <td><span class="st-sub">Від OLT:</span><br><b class="sym-in"><span class="sym-in">● </span>-1,19 дБ</b></td>
+    <td><span class="sym-fbt">◆ </span><strong>FBT 20/80</strong><br><span class="st-sub">(X -7,11 / Y -1,06)</span></td>
+    <td><span class="st-sub">Відвід X (на PLC):</span><br><b class="sym-out"><span class="sym-out">● </span>-8,3 дБ</b><hr class="st-hr"><span class="st-sub">Транзит Y:</span><br><b class="sym-tran"><span class="sym-tran">● </span>-2,25 дБ</b></td>
+    <td><span class="sym-plc">■ </span><strong>PLC 1x8</strong> <span class="st-sub">(-10,7)</span><br><em>Порти 1-8:</em><br><strong>-19,0 дБ</strong></td>
+    <td><b class="sym-out"><span class="sym-out">■ </span>-19,5 дБ</b><br><span class="st-sub">(-0,5 кон.)</span></td>
+  </tr>
+  <tr class="st-calc">
+    <td colspan="3"><span class="sym-in">● </span>-1,19 &minus; <span class="sym-fbt">◆ </span>X (7,11) = <span class="sym-out">● </span><b>-8,3 дБ</b></td>
+    <td colspan="2"><span class="sym-in">● </span>-1,19 &minus; <span class="sym-fbt">◆ </span>Y (1,06) = <span class="sym-tran">● </span><b>-2,25 дБ</b></td>
+  </tr>
+  <tr class="st-calc">
+    <td colspan="3"><span class="sym-out">● </span>-8,3 &minus; <span class="sym-plc">■ </span>PLC 1x8 (10,7) = <b>-19,0 дБ</b></td>
+    <td colspan="2"><span class="sym-plc">■ </span>-19,0 &minus; конектор 0,5 = <span class="sym-out">■ </span><b>-19,5 дБ</b></td>
+  </tr>
+  <tr>
+    <td rowspan="3"><strong>FOB 14</strong></td>
+    <td><span class="st-sub">Від FOB 13:</span><br><b class="sym-tran"><span class="sym-tran">● </span>-2,25 дБ</b></td>
+    <td><span class="sym-fbt">◆ </span><strong>FBT 20/80</strong><br><span class="st-sub">(X -7,11 / Y -1,06)</span></td>
+    <td><span class="st-sub">Відвід X (на PLC):</span><br><b class="sym-out"><span class="sym-out">● </span>-9,36 дБ</b><hr class="st-hr"><span class="st-sub">Транзит Y:</span><br><b class="sym-tran"><span class="sym-tran">● </span>-3,31 дБ</b></td>
+    <td><span class="sym-plc">■ </span><strong>PLC 1x8</strong> <span class="st-sub">(-10,7)</span><br><em>Порти 1-8:</em><br><strong>-20,06 дБ</strong></td>
+    <td><b class="sym-out"><span class="sym-out">■ </span>-20,56 дБ</b><br><span class="st-sub">(-0,5 кон.)</span></td>
+  </tr>
+  <tr class="st-calc">
+    <td colspan="3"><span class="sym-tran">● </span>-2,25 &minus; <span class="sym-fbt">◆ </span>X (7,11) = <span class="sym-out">● </span><b>-9,36 дБ</b></td>
+    <td colspan="2"><span class="sym-tran">● </span>-2,25 &minus; <span class="sym-fbt">◆ </span>Y (1,06) = <span class="sym-tran">● </span><b>-3,31 дБ</b></td>
+  </tr>
+  <tr class="st-calc">
+    <td colspan="3"><span class="sym-out">● </span>-9,36 &minus; <span class="sym-plc">■ </span>PLC 1x8 (10,7) = <b>-20,06 дБ</b></td>
+    <td colspan="2"><span class="sym-plc">■ </span>-20,06 &minus; конектор 0,5 = <span class="sym-out">■ </span><b>-20,56 дБ</b></td>
+  </tr>
+  <tr>
+    <td rowspan="3"><strong>FOB 15</strong></td>
+    <td><span class="st-sub">Від FOB 14:</span><br><b class="sym-tran"><span class="sym-tran">● </span>-3,31 дБ</b></td>
+    <td><span class="sym-fbt">◆ </span><strong>FBT 20/80</strong><br><span class="st-sub">(X -7,11 / Y -1,06)</span></td>
+    <td><span class="st-sub">Відвід X (на PLC):</span><br><b class="sym-out"><span class="sym-out">● </span>-10,42 дБ</b><hr class="st-hr"><span class="st-sub">Транзит Y:</span><br><b class="sym-tran"><span class="sym-tran">● </span>-4,37 дБ</b></td>
+    <td><span class="sym-plc">■ </span><strong>PLC 1x8</strong> <span class="st-sub">(-10,7)</span><br><em>Порти 1-8:</em><br><strong>-21,12 дБ</strong></td>
+    <td><b class="sym-out"><span class="sym-out">■ </span>-21,62 дБ</b><br><span class="st-sub">(-0,5 кон.)</span></td>
+  </tr>
+  <tr class="st-calc">
+    <td colspan="3"><span class="sym-tran">● </span>-3,31 &minus; <span class="sym-fbt">◆ </span>X (7,11) = <span class="sym-out">● </span><b>-10,42 дБ</b></td>
+    <td colspan="2"><span class="sym-tran">● </span>-3,31 &minus; <span class="sym-fbt">◆ </span>Y (1,06) = <span class="sym-tran">● </span><b>-4,37 дБ</b></td>
+  </tr>
+  <tr class="st-calc">
+    <td colspan="3"><span class="sym-out">● </span>-10,42 &minus; <span class="sym-plc">■ </span>PLC 1x8 (10,7) = <b>-21,12 дБ</b></td>
+    <td colspan="2"><span class="sym-plc">■ </span>-21,12 &minus; конектор 0,5 = <span class="sym-out">■ </span><b>-21,62 дБ</b></td>
+  </tr>
+  <tr>
+    <td rowspan="3"><strong>FOB 16</strong></td>
+    <td><span class="st-sub">Від FOB 15:</span><br><b class="sym-tran"><span class="sym-tran">● </span>-4,37 дБ</b></td>
+    <td><span class="sym-fbt">◆ </span><strong>FBT 20/80</strong><br><span class="st-sub">(X -7,11 / Y -1,06)</span></td>
+    <td><span class="st-sub">Відвід X (на PLC):</span><br><b class="sym-out"><span class="sym-out">● </span>-11,48 дБ</b><hr class="st-hr"><span class="st-sub">Транзит Y:</span><br><b class="sym-tran"><span class="sym-tran">● </span>-5,43 дБ</b></td>
+    <td><span class="sym-plc">■ </span><strong>PLC 1x8</strong> <span class="st-sub">(-10,7)</span><br><em>Порти 1-8:</em><br><strong>-22,18 дБ</strong></td>
+    <td><b class="sym-out"><span class="sym-out">■ </span>-22,68 дБ</b><br><span class="st-sub">(-0,5 кон.)</span></td>
+  </tr>
+  <tr class="st-calc">
+    <td colspan="3"><span class="sym-tran">● </span>-4,37 &minus; <span class="sym-fbt">◆ </span>X (7,11) = <span class="sym-out">● </span><b>-11,48 дБ</b></td>
+    <td colspan="2"><span class="sym-tran">● </span>-4,37 &minus; <span class="sym-fbt">◆ </span>Y (1,06) = <span class="sym-tran">● </span><b>-5,43 дБ</b></td>
+  </tr>
+  <tr class="st-calc">
+    <td colspan="3"><span class="sym-out">● </span>-11,48 &minus; <span class="sym-plc">■ </span>PLC 1x8 (10,7) = <b>-22,18 дБ</b></td>
+    <td colspan="2"><span class="sym-plc">■ </span>-22,18 &minus; конектор 0,5 = <span class="sym-out">■ </span><b>-22,68 дБ</b></td>
+  </tr>
+  <tr>
+    <td rowspan="3"><strong>FOB 17</strong></td>
+    <td><span class="st-sub">Від FOB 16:</span><br><b class="sym-tran"><span class="sym-tran">● </span>-5,43 дБ</b></td>
+    <td><span class="st-sub">Відсутній (кінцева муфта)</span></td>
+    <td><span class="st-sub">Відвід X (на PLC):</span><br><b class="sym-out"><span class="sym-out">● </span>-5,43 дБ</b><hr class="st-hr"><span class="st-sub">Транзит Y:</span><br><em>немає</em></td>
+    <td><span class="sym-plc">■ </span><strong>PLC 1x8</strong> <span class="st-sub">(-10,7)</span><br><em>Порти 1-8:</em><br><strong>-16,13 дБ</strong></td>
+    <td><b class="sym-out"><span class="sym-out">■ </span>-16,63 дБ</b><br><span class="st-sub">(-0,5 кон.)</span></td>
+  </tr>
+  <tr class="st-calc">
+    <td colspan="3"><span class="sym-tran">● </span>Вхід -5,43 &rarr; напряму на PLC (без FBT)</td>
+    <td colspan="2"><span class="sym-out">● </span>На PLC: <b>-5,43 дБ</b></td>
+  </tr>
+  <tr class="st-calc">
+    <td colspan="3"><span class="sym-out">● </span>-5,43 &minus; <span class="sym-plc">■ </span>PLC 1x8 (10,7) = <b>-16,13 дБ</b></td>
+    <td colspan="2"><span class="sym-plc">■ </span>-16,13 &minus; конектор 0,5 = <span class="sym-out">■ </span><b>-16,63 дБ</b></td>
+  </tr>
+</table>
+</div>
+
+<hr>
+
+<h2>5. Специфікація обладнання та організація кабельної інфраструктури</h2>
+
+<p>Для побудови всієї інфраструктури ми задіяли 4 робочі оптичні волокна. Але використання одно- чи двоволоконних кабелів на магістралі є неефективним і створює ризики під час експлуатації. Рекомендовано прокладати <strong>базовий оптичний кабель на 8 або 12 волокон</strong>. Це створює надійний апаратний резерв (у разі обриву чи деградації робочого волокна можна переварити лінію на вільне) і забезпечує легку модернізацію у майбутньому без необхідності перепрокладати лінії через все місто.</p>
+
+<p class="table-caption"><strong>Таблиця 3.7.</strong> Загальна комплектація обладнання для створення мережі — BOM (Bill of Materials, відомість матеріалів)</p>
+<div class="table-responsive table-medium">
+<table class="sim-table">
+  <tr>
+    <th>№</th>
+    <th>Назва апаратного забезпечення</th>
+    <th>Кількість, шт. (м) / Призначення</th>
+  </tr>
+  <tr><td>1</td><td>OLT (Оптичний Лінійний Термінал)</td><td>1 шт. (Головна станція)</td></tr>
+  <tr><td>2</td><td>Абонентський термінал (ONU)</td><td>132 шт. (Відповідно до кількості абонентів)</td></tr>
+  <tr><td>3</td><td>Розподільчий бокс (FOB)</td><td>17 шт.</td></tr>
+  <tr><td>4</td><td>Сплітер планарний PLC 1x8</td><td>16 шт.</td></tr>
+  <tr><td>5</td><td>Сплітер планарний PLC 1x4</td><td>1 шт. (на віддаленому FOB7)</td></tr>
+  <tr><td>6</td><td>Сплітер зварний FBT 30/70</td><td>1 шт. (Первинний поділ на Торгову/Перемоги)</td></tr>
+  <tr><td>7</td><td>Сплітер зварний FBT 50/50</td><td>2 шт. (Торгова FOB1 та поділ на Райдужну/Матросова)</td></tr>
+  <tr><td>8</td><td>Сплітер зварний FBT 20/80</td><td>13 шт. (Для створення топології "Шина")</td></tr>
+  <tr><td>9</td><td>Абонентський оптичний патчкорд</td><td>132 шт. (Від FOB до ONU)</td></tr>
+  <tr><td>10</td><td>Оптичний кабель (магістральний, 8 жил)</td><td>Довжина залежить від карти масштабу.</td></tr>
+</table>
+</div>
+
+<hr>
+
+<h2>6. Практичне моделювання: інтеграція із системою PON Designer</h2>
+
+<div class="definition-block">
+  <p><strong>PON Designer</strong> — це спеціалізований веб-симулятор для інженерного проектування пасивних оптичних мереж (PON), який дозволяє інженерам і студентам переходити від теоретичних табличних розрахунків до реального моделювання на карті.</p>
+</div>
+
+<p>Як ми побачили, ручний оптичний розрахунок є досить громіздким та загрожує появою математичних помилок. Під час практичних та лабораторних робіт ви будете працювати у програмі <strong>PON Designer</strong>, де процес проектування автоматизовано.</p>
+
+<p>Порівняно з теоретичною матрицею втрат, що використана у цій лекції, симулятор здійснює куди глибший аналіз і враховує фактори реального середовища:</p>
+<ul>
+  <li><strong>Точний гео-метраж:</strong> автоматично обчислюються втрати світла залежно від фактичної довжини кожної гілки оптичного кабелю на мапі (затухання на метр дистанції).</li>
+  <li><strong>Втрати у кросах (Зварні касети):</strong> система вираховує загасання на кожній розвареній або транзитній жилі магістрального кабелю всередині оптичного кросу — ODF (Optical Distribution Frame, оптична розподільча панель) чи муфти.</li>
+  <li><strong>Контроль конекторів:</strong> окремо враховуються втрати на адаптерах дроп-кабелів до абонента (Fast Connectors).</li>
+  <li><strong>Real-time Бюджет:</strong> кожна додана на карту муфта чи зміна дільника (наприклад, з 10/90 на 20/80) призводить до миттєвого перерахунку сигналу, що підсвічується кольоровою індикацією (зелений/жовтий/червоний).</li>
+</ul>
+
+<p>Використання PON Designer допоможе вам без зайвих труднощів моделювати складні "Шини" і багаторівневі "Зірки", гнучко управляти запасом магістральних жил і створювати автоматичний кошторис економічної специфікації мережі.</p>
+
+<hr>
+
+<h2>Контрольні питання</h2>
+<ol>
+  <li>У чому фундаментальна відмінність технології PON від багатоквартирної розводки FTTB/FTTH при проектуванні приватного сектора?</li>
+  <li>Параметри якого пристрою лімітують максимальний оптичний бюджет при побудові лінії?</li>
+  <li>Поясніть логічне та апаратне призначення зварних дільників FBT та планарних PLC в топології мережі "Шина".</li>
+  <li>Як зміниться оптичний бюджет на кінцевому абоненті (ONU), якщо відстань від розподільчого боксу до нього збільшиться з 1 км до 10 км? Що треба враховувати?</li>
+  <li>Чому при кількості задіяних волокон, рівній 4-м, інженерно доцільно обрати для прокладки базовий 8-волоконний оптичний кабель?</li>
+</ol>
+
+</main>
+
+<div style="max-width: 1400px; margin: 0 auto 2rem;">
+  <nav class="nav-bar">
+    <a href="Lection2.html" class="nav-link">← Попередня лекція</a>
+    <a href="index.html" class="nav-link" style="color: var(--secondary-color);">На головну</a>
+  </nav>
+</div>
+
+</body>
+</html>
