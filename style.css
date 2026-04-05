@@ -133,11 +133,9 @@ li::marker {
   max-width: 480px;
   margin: 0 auto 1.5rem;
 }
-
 .table-narrow .sim-table {
   min-width: auto;
 }
-
 .table-narrow .sim-table th,
 .table-narrow .sim-table td {
   white-space: normal;
@@ -180,7 +178,7 @@ li::marker {
   font-weight: 600;
   text-align: center;
   font-size: 0.82rem;
-  white-space: nowrap; /* для таблиць розрахунків — без переносу */
+  white-space: nowrap;
 }
 
 .sim-table td {
