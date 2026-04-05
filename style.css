@@ -130,14 +130,30 @@ li::marker {
 
 /* Вузькі довідкові таблиці (Таблиці 3.1, 3.2 тощо) */
 .table-narrow {
-  max-width: 700px;
+  max-width: 480px;
   margin: 0 auto 1.5rem;
+}
+
+.table-narrow .sim-table {
+  min-width: auto;
+}
+
+.table-narrow .sim-table th,
+.table-narrow .sim-table td {
+  white-space: normal;
+  line-height: 1.3;
 }
 
 /* Середні таблиці (BOM, специфікації) */
 .table-medium {
-  max-width: 900px;
+  max-width: 100%;
   margin: 0 auto 1.5rem;
+}
+
+.table-medium .sim-table {
+  width: auto;
+  min-width: auto;
+  margin: 0 auto;
 }
 
 /* Таблиці */
@@ -154,7 +170,7 @@ li::marker {
   margin: 0;
   font-size: 0.85rem;
   line-height: 1.35;
-  min-width: 600px;
+  min-width: 950px;
 }
 
 .sim-table th {
@@ -164,7 +180,7 @@ li::marker {
   font-weight: 600;
   text-align: center;
   font-size: 0.82rem;
-  white-space: nowrap;
+  white-space: nowrap; /* для таблиць розрахунків — без переносу */
 }
 
 .sim-table td {
@@ -172,6 +188,7 @@ li::marker {
   border: 1px solid var(--border-color);
   vertical-align: middle;
   text-align: center;
+  white-space: nowrap;
 }
 
 .sim-table tr:nth-child(even) td {
