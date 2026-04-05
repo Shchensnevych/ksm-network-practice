@@ -81,6 +81,21 @@
   <p class="image-caption">Рис. 2.1. Фізична та логічна архітектура передачі даних Downstream та Upstream</p>
 </div>
 
+<div class="note">
+  <p><strong>Розбір схеми (Рис. 2.1):</strong> Як демонструє спектрограма (нижній графік), технологія спектрального ущільнення WDM забезпечує надійну ізоляцію інформаційних потоків. У центральному офісі (CO) та на боці абонентів встановлені фазовані хвилеводні решітки (AWG — Arrayed Waveguide Grating). Вони виконують функцію мультиплексора/демультиплексора, об’єднуючи окремі довжини хвиль (&lambda;1, &lambda;2 ... &lambda;N) від різних передавачів (TX) у спільне оптичне волокно.
+  <br>На шкалі довжин хвиль (нм) чітко видно, що висхідний (Upstream) та низхідний (Downstream) канали спектрально рознесені на відстань, кратну вільному спектральному діапазону (m &times; FSR). Такий значний розрив між діапазонами запобігає виникненню перехресних завад і гарантує, що потужний вихідний сигнал не перевантажить чутливі приймачі (RX) зустрічного потоку.</p>
+  
+  <p style="margin-top: 10px; font-size: 0.9em;"><strong>Розшифровка абревіатур схеми:</strong></p>
+  <ul style="font-size: 0.85em; margin-bottom: 0;">
+    <li><strong>CO (Central Office)</strong> — центральний офіс (головна станція провайдера).</li>
+    <li><strong>ONU (Optical Network Unit)</strong> — оптичний мережевий пристрій кінцевого абонента.</li>
+    <li><strong>TX (Transmitter)</strong> / <strong>RX (Receiver)</strong> — оптичний передавач (лазер) та оптичний приймач (фотодіод) відповідно.</li>
+    <li><strong>AWG (Arrayed Waveguide Grating)</strong> — пристрій для мультиплексування декількох довжин хвиль.</li>
+    <li><strong>FSR (Free Spectral Range)</strong> — вільний спектральний діапазон (відстань між сусідніми робочими смугами пропускання).</li>
+    <li><strong>&lambda; (лямбда)</strong> — символ, яким позначається конкретна довжина хвилі світла в нанометрах (нм).</li>
+  </ul>
+</div>
+
 <h2>3. Топології та Апаратне забезпечення мережі GEPON</h2>
 
 <div class="definition-block">
@@ -195,7 +210,37 @@
   <p class="image-caption">Рис. 2.7. Внутрішня будова оптичного боксу Crosver FOB-03-12 (сплайс-касети та порти)</p>
 </div>
 
-<h3>3.3. Дільники оптичної потужності (Сплітери FBT і PLC)</h3>
+<h3>3.3. Пасивне обладнання: Оптичні конектори та типи полірування</h3>
+
+<div style="text-align:center; margin: 15pt 0;">
+  <div style="border: 1.5pt dashed #B0C4DE; padding: 10pt; border-radius: 6px; margin-bottom: 8pt; background: #fff;">
+    <img src="assets/lection2/fig_2_8_connectors.png" alt="Рис. 2.8. Типи оптичних конекторів та адаптерів" style="max-width: 100%; border: 1px solid #ddd; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+  </div>
+  <p class="image-caption">Рис. 2.8. Розмаїття оптичних конекторів та сполучних розеток (адаптерів)</p>
+</div>
+
+<p>Для комутації обладнання індустрія розробила десятки видів <strong>оптичних конекторів</strong>. Як видно з рис. 2.8, вони відрізняються форм-фактором (розміром і механізмом фіксації) та кольором. До найбільш поширених належать:</p>
+<ul>
+  <li><strong>SC (Subscriber Connector):</strong> Великі пластикові конектори квадратного перерізу з механізмом лінійної фіксації "pull-push" (вставив до кліку). Це абсолютний стандарт для побутових абонентських терміналів ONU та розподільчих боксів FOB.</li>
+  <li><strong>LC (Lucent Connector):</strong> Зменшена копія SC з фіксатором-защіпкою (як на мідному конекторі RJ-45). Через компактний розмір використовується переважно в серверних для підключення оптичних трансиверів (SFP-модулів) у комутатори та OLT.</li>
+  <li><strong>FC (Ferrule Connector) та ST:</strong> Старіші оптичні роз'єми в металевих круглих корпусах з різьбою або байонетним замком (як у BNC). Стійкі до вібрацій, тому часто застосовуються на промислових об'єктах та магістральних кросах.</li>
+  <li><strong>E2000:</strong> Високотехнологічні європейські конектори з автоматичною пластиковою або металевою шторкою. При вийманні патчкорду шторка закриває скло, що захищає сітківку ока від лазера та запобігає потраплянню пилу на лінзу. Використовуються в телекомі преміум-класу.</li>
+  <li><strong>MU (Miniature Unit):</strong> Схожий на зменшений удвічі варіант SC (Push-Pull). Популярний у високощільних панелях спеціалізованого обладнання.</li>
+  <li><strong>MTRJ та MPO/MTP:</strong> Багатоволоконні конектори. Один компактний роз'єм MPO може містити одразу 12, 24 або навіть 72 волокна (стрічковий кабель). Це абсолютний стандарт для побудови "позамежних" швидкостей 40G/100G/400G всередині надважких Data-центрів (ЦОД).</li>
+  <li><strong>DIN:</strong> Металевий конектор з фіксатором, що нагадує телевізійний, розроблений Німецьким інститутом стандартизації. Часто зустрічається у дорогому вимірювальному оптичному обладнанні (рефлектометрах) та медичній апаратурі.</li>
+</ul>
+
+<div class="modern-alert Tech">
+  <h4>🎨 Кольорове маркування: UPC проти APC</h4>
+  <p>Колір пластикового корпуса конектора — це не просто декор, а <strong>жорсткий технічний стандарт полірування (шліфування) торця скляної жили</strong>:</p>
+  <ul style="margin-top: 8px; margin-bottom: 0;">
+    <li style="margin-bottom: 6px;"><strong>Сині конектори (UPC - Ultra Physical Contact):</strong> Торець скла відшліфований ідеально рівно (перпендикулярно, під кутом 90 градусів). Використовуються переважно в класичних LAN-мережах та серверних.</li>
+    <li><strong>Зелені конектори (APC - Angled Physical Contact):</strong> Торець скла скошений під кутом 8 градусів. Завдяки скосу, світло відбивається "у стінку" оболонки і розсіюється, а не повертається назад у лазер. Це критично важливо для гіперчутливих мереж, тому <em>в PON застосовуються майже виключно зелені конектори APC</em>.</li>
+  </ul>
+  <p style="margin-top: 10px; margin-bottom: 0;"><strong>⚠️ КРИТИЧНА ПОМИЛКА:</strong> Ніколи не можна з'єднувати синій конектор із зеленим! Через наявність кута в одному і рівної поверхні в іншому, при затисканні в адаптері вони розкришать і подряпають один одного. З'єднання "синій-в-синій" та "зелений-в-зелений" (через відповідний адаптер такого ж кольору) є обов'язковим правилом.</p>
+</div>
+
+<h3>3.4. Дільники оптичної потужності (Сплітери FBT і PLC)</h3>
 <p>Суть пасивної мережі полягає в оптичних сплітерах, що ділять світловий пучок на кілька променів без використання струму:</p>
 <ul>
   <li><strong>FBT (Fused Biconical Taper) — Зварний дільник.</strong> Його виготовляють розтягуванням двох зварених волокон. Головна унікальність FBT: він здатний ділити сигнал "несправедливо" (асиметрично, у відсотковому відношенні). Наприклад: 5%/95%, або 30%/70%. Це використовують, аби залишити більше потужності для транзиту по лінії вглиб селища, "відщипуючи" для найближчого будинку лише мінімум. Виробники позначають відсотки кольором кембриків на проводах дільника.</li>
@@ -207,15 +252,15 @@
 <div class="image-row">
   <div style="text-align:center;">
     <div style="border: 1.5pt dashed #B0C4DE; padding: 10pt; border-radius: 6px; margin-bottom: 8pt;">
-      <img src="assets/lection2/fig_2_8_fbt_splitter.png" alt="Рис. 2.8. Зварний дільник FBT" style="max-width: 100%; border: 1px solid #ddd; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+      <img src="assets/lection2/fig_2_9_fbt_splitter.png" alt="Рис. 2.9. Зварний дільник FBT" style="max-width: 100%; border: 1px solid #ddd; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
     </div>
-    <p class="image-caption">Рис. 2.8. Зварний дільник сигналу FBT (крупним планом)</p>
+    <p class="image-caption">Рис. 2.9. Зварний дільник сигналу FBT (крупним планом)</p>
   </div>
   <div style="text-align:center;">
     <div style="border: 1.5pt dashed #B0C4DE; padding: 10pt; border-radius: 6px; margin-bottom: 8pt;">
-      <img src="assets/lection2/fig_2_9_plc_splitter.png" alt="Рис. 2.9. Планарний дільник PLC" style="max-width: 100%; border: 1px solid #ddd; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+      <img src="assets/lection2/fig_2_10_plc_splitter.png" alt="Рис. 2.10. Планарний дільник PLC" style="max-width: 100%; border: 1px solid #ddd; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
     </div>
-    <p class="image-caption">Рис. 2.9. Планарний дільник сигналу PLC (крупним планом)</p>
+    <p class="image-caption">Рис. 2.10. Планарний дільник сигналу PLC (крупним планом)</p>
   </div>
 </div>
 
@@ -248,9 +293,9 @@
 
 <div style="text-align:center; margin: 15pt 0;">
   <div style="border: 1.5pt dashed #B0C4DE; padding: 10pt; border-radius: 6px; margin-bottom: 8pt;">
-    <img src="assets/lection2/fig_2_10_star_topology.png" alt="Рис. 2.10–1.11. Два варіанти топології «Зірка»" style="max-width: 100%; border: 1px solid #ddd; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+    <img src="assets/lection2/fig_2_11_star_topology.png" alt="Рис. 2.11–1.11. Два варіанти топології «Зірка»" style="max-width: 100%; border: 1px solid #ddd; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
   </div>
-  <p class="image-caption">Рис. 2.11. Можливі види топології PON типу «Зірка» (1x64 та 1x2+1x32)</p>
+  <p class="image-caption">Рис. 2.12. Можливі види топології PON типу «Зірка» (1x64 та 1x2+1x32)</p>
 </div>
 
 <h3>4.2. Топологія «Дерево»</h3>
@@ -265,9 +310,9 @@
 
 <div style="text-align:center; margin: 15pt 0;">
   <div style="border: 1.5pt dashed #B0C4DE; padding: 10pt; border-radius: 6px; margin-bottom: 8pt;">
-    <img src="assets/lection2/fig_2_12_single_tree.png" alt="Рис. 2.12. Схема самотньо-зростаючого дерева" style="max-width: 100%; border: 1px solid #ddd; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+    <img src="assets/lection2/fig_2_13_single_tree.png" alt="Рис. 2.13. Схема самотньо-зростаючого дерева" style="max-width: 100%; border: 1px solid #ddd; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
   </div>
-  <p class="image-caption">Рис. 2.12. Можливий вигляд топології PON типу «самотньо-зростаюче дерево»</p>
+  <p class="image-caption">Рис. 2.13. Можливий вигляд топології PON типу «самотньо-зростаюче дерево»</p>
 </div>
 
 <h3><em>4.2.2. «Мультидерево» (лісопосадка)</em></h3>
@@ -283,23 +328,23 @@
 
 <div style="text-align:center; margin: 15pt 0;">
   <div style="border: 1.5pt dashed #B0C4DE; padding: 10pt; border-radius: 6px; margin-bottom: 8pt;">
-    <img src="assets/lection2/fig_2_13_grid_method.png" alt="Рис. 2.13. Квадратно-гніздовий метод проєктування" style="max-width: 100%; border: 1px solid #ddd; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+    <img src="assets/lection2/fig_2_14_grid_method.png" alt="Рис. 2.14. Квадратно-гніздовий метод проєктування" style="max-width: 100%; border: 1px solid #ddd; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
   </div>
-  <p class="image-caption">Рис. 2.13. Квадратно-гніздовий спосіб проєктування мультидерева з планарними дільниками 1x4</p>
+  <p class="image-caption">Рис. 2.14. Квадратно-гніздовий спосіб проєктування мультидерева з планарними дільниками 1x4</p>
 </div>
 
 <div style="text-align:center; margin: 15pt 0;">
   <div style="border: 1.5pt dashed #B0C4DE; padding: 10pt; border-radius: 6px; margin-bottom: 8pt;">
-    <img src="assets/lection2/fig_2_14_multitree_node.png" alt="Рис. 2.14. Вузол ділення при розвитку мультидерева" style="max-width: 100%; border: 1px solid #ddd; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+    <img src="assets/lection2/fig_2_15_multitree_node.png" alt="Рис. 2.15. Вузол ділення при розвитку мультидерева" style="max-width: 100%; border: 1px solid #ddd; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
   </div>
-  <p class="image-caption">Рис. 2.14. Основний вузол ділення при розвитку топології PON типу «мультидерево»</p>
+  <p class="image-caption">Рис. 2.15. Основний вузол ділення при розвитку топології PON типу «мультидерево»</p>
 </div>
 
 <div style="text-align:center; margin: 15pt 0;">
   <div style="border: 1.5pt dashed #B0C4DE; padding: 10pt; border-radius: 6px; margin-bottom: 8pt;">
-    <img src="assets/lection2/fig_2_15_branch_methods.png" alt="Рис. 2.15. Способи розгалуження дерева" style="max-width: 100%; border: 1px solid #ddd; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+    <img src="assets/lection2/fig_2_16_branch_methods.png" alt="Рис. 2.16. Способи розгалуження дерева" style="max-width: 100%; border: 1px solid #ddd; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
   </div>
-  <p class="image-caption">Рис. 2.15. Основні способи розгалуження пасивного дерева</p>
+  <p class="image-caption">Рис. 2.16. Основні способи розгалуження пасивного дерева</p>
 </div>
 
 <div class="definition-block">
@@ -326,9 +371,9 @@
 
 <div style="text-align:center; margin: 15pt 0;">
   <div style="border: 1.5pt dashed #B0C4DE; padding: 10pt; border-radius: 6px; margin-bottom: 8pt;">
-    <img src="assets/lection2/fig_2_16_bus_topology.png" alt="Рис. 2.16. Топологія PON типу «Шина»" style="max-width: 100%; border: 1px solid #ddd; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+    <img src="assets/lection2/fig_2_17_bus_topology.png" alt="Рис. 2.17. Топологія PON типу «Шина»" style="max-width: 100%; border: 1px solid #ddd; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
   </div>
-  <p class="image-caption">Рис. 2.16. Топологія PON типу «Шина» з комбінацією FBT та PLC дільників</p>
+  <p class="image-caption">Рис. 2.17. Топологія PON типу «Шина» з комбінацією FBT та PLC дільників</p>
 </div>
 
 <p>Ця схема зручна тим, що при грамотному плануванні мережа стає легко масштабованою, а <strong>підключення нового абонента виконується у три кроки:</strong></p>
@@ -344,9 +389,9 @@
 
 <div style="text-align:center; margin: 15pt 0;">
   <div style="border: 1.5pt dashed #B0C4DE; padding: 10pt; border-radius: 6px; margin-bottom: 8pt;">
-    <img src="assets/lection2/fig_2_17_fbt_splice.png" alt="Рис. 2.17. Включення зварного дільника в магістраль" style="max-width: 100%; border: 1px solid #ddd; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+    <img src="assets/lection2/fig_2_18_fbt_splice.png" alt="Рис. 2.18. Включення зварного дільника в магістраль" style="max-width: 100%; border: 1px solid #ddd; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
   </div>
-  <p class="image-caption">Рис. 2.17. Включення зварного дільника в магістральну лінію без використання механічних з'єднувачів</p>
+  <p class="image-caption">Рис. 2.18. Включення зварного дільника в магістральну лінію без використання механічних з'єднувачів</p>
 </div>
 
 <div class="note">
