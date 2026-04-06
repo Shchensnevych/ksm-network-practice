@@ -190,7 +190,7 @@ li::marker {
 }
 
 .sim-table tr:nth-child(even) td {
-  background-color: #fafbfc;
+  background-color: #e8edf3;
 }
 
 .st-sub {
