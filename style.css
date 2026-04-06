@@ -636,6 +636,7 @@ li::marker {
 }
 
 
+
 /* Врізки-нотатки та Сповіщення */
 .note, .definition-block, .modern-alert {
   border-left: 4px solid var(--primary-color);
@@ -661,6 +662,41 @@ li::marker {
   color: #552d9b;
 }
 
+.modern-alert.Business {
+  border-left-color: #f59e0b;
+  background-color: #fffbeb;
+}
+.modern-alert.Business h4 {
+  color: #b45309;
+}
+
+.modern-alert.Info {
+  border-left-color: #0dcaf0;
+  background-color: #f0fcfd;
+}
+.modern-alert.Info h4 {
+  color: #087990;
+}
+.modern-alert.Info i {
+  color: #0dcaf0;
+}
+
+.modern-alert.compact {
+  padding: 12px 15px;
+  margin: 12px 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.modern-alert.compact i {
+  margin-top: 4px;
+  font-size: 1.1rem;
+}
+.modern-alert.compact > div {
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
 .modern-alert h4 {
   margin-top: 0;
   margin-bottom: 0.5rem;
@@ -672,3 +708,58 @@ li::marker {
 .modern-alert p {
   margin-bottom: 0;
 }
+
+/* Global Navigation Bar */
+.global-navbar {
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border-color);
+  padding: 0 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  height: 60px;
+}
+.global-nav-container {
+  display: flex;
+  gap: 1rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow-x: auto;
+  max-width: 1400px;
+  width: 100%;
+}
+.global-nav-item {
+  display: inline-block;
+}
+.global-nav-link {
+  display: flex;
+  align-items: center;
+  color: var(--text-color);
+  text-decoration: none;
+  font-weight: 500;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  transition: all 0.2s;
+  white-space: nowrap;
+  font-size: 0.95rem;
+}
+.global-nav-link:hover {
+  color: var(--primary-color);
+  background: var(--hover-color);
+}
+.global-nav-link.active {
+  color: var(--primary-color);
+  background: #eff6ff;
+  font-weight: 600;
+}
+@media (max-width: 768px) {
+  .global-navbar { padding: 0 0.5rem; }
+  .global-nav-link { padding: 0.5rem; font-size: 0.85rem; }
+}
+

@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Практична робота №1 (PON) - Комп'ютерні мережі</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .icon-svg { margin-right: 8px; vertical-align: bottom; }
+        .rule-explanation { font-size: 0.95rem; font-style: italic; margin-top: 8px; line-height: 1.5; }
+        .modern-alert.Energy .rule-explanation { color: #115c38; }
+        .modern-alert.Tech .rule-explanation { color: #552d9b; }
+        .modern-alert .rule-explanation { color: #0d6efd; }
+        .glossary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; margin-bottom: 2rem; }
+        .glossary-card { background: var(--bg-card); padding: 15px; border-radius: 8px; box-shadow: var(--shadow-sm); border-left: 4px solid var(--primary-color); }
+        .glossary-title { font-weight: 600; color: var(--text-color); margin-bottom: 5px; display: block; }
+        .glossary-desc { font-size: 0.9rem; color: var(--text-muted); line-height: 1.4; }
+        .breadcrumb-nav { font-size: 0.95rem; color: var(--text-muted); display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-top: 1.5rem; margin-bottom: -1.5rem; max-width: 1400px; width: calc(100% - 4rem); margin-left: auto; margin-right: auto;}
+        .breadcrumb-nav a { color: var(--primary-color); text-decoration: none; font-weight: 500;}
+        .breadcrumb-nav a:hover { text-decoration: underline; }
+        
+        .pagination-container { margin-top: 2rem; margin-bottom: 3rem; background: transparent; box-shadow: none; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+        .pagination-btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 20px; border-radius: 8px; font-weight: 600; text-decoration: none; transition: all 0.3s ease; }
+        .pagination-prev { background-color: var(--bg-card); color: var(--text-color); box-shadow: var(--shadow-sm); border: 1px solid rgba(0,0,0,0.05); }
+        .pagination-prev:hover { transform: translateX(-5px); box-shadow: var(--shadow-md); }
+        .pagination-next { background-color: var(--primary-color); color: white; box-shadow: 0 4px 15px rgba(13, 110, 253, 0.3); }
+        .pagination-next:hover { transform: translateX(5px); box-shadow: 0 6px 20px rgba(13, 110, 253, 0.4); opacity: 0.9; }
+    </style>
+</head>
+<body class="home-page">
+
+    <!-- Global Navigation Bar -->
+    <nav class="global-navbar">
+        <ul class="global-nav-container">
+            <li class="global-nav-item"><a href="index.html" class="global-nav-link"><i class="fa-solid fa-home" style="margin-right:5px"></i>Головна</a></li>
+            <li class="global-nav-item"><a href="Lection1.html" class="global-nav-link">Лекція 1</a></li>
+            <li class="global-nav-item"><a href="Lection2.html" class="global-nav-link">Лекція 2</a></li>
+            <li class="global-nav-item"><a href="Lection3.html" class="global-nav-link">Лекція 3</a></li>
+            <li class="global-nav-item"><a href="Practice1.html" class="global-nav-link active">Практика 1 (PON)</a></li>
+        </ul>
+    </nav>
+
+    <header class="hero" style="border-radius: 12px; max-width: 1400px; margin: 3rem auto 2rem; padding: 4rem 2rem;">
+        <h1 style="border: none;">Практична робота (PON) (40 годин)</h1>
+        <p>Проєктування архітектури PON-мереж для приватного сектору з урахуванням інженерних та економічних факторів</p>
+    </header>
+
+    <div class="container">
+        
+        <h2>1. Мета та завдання роботи</h2>
+        <p><strong>Мета роботи:</strong> набуття практичних інженерних навичок проєктування пасивних оптичних мереж (PON) у приватному секторі, базуючись переважно на топології "Шина". Завдання передбачає вивчення принципів каскадування асиметричних дільників, розрахунок оптичного бюджету, дотримання реалістичних експлуатаційних лімітів та формування економічного кошторису мережі.</p>
+
+        <div class="modern-alert Tech">
+            <h4>
+                <svg class="icon-svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                Інструмент для симуляції
+            </h4>
+            <p>Усі етапи роботи (вибір локацій, побудова схеми, розрахунок сигналу та звітність) виконуються в інтерактивному середовищі <strong>PON Network Designer</strong>.</p>
+            <div style="margin-top: 15px; text-align: center;">
+                <a href="https://shchensnevych.github.io/pon-network-designer/pon-app/" target="_blank" class="nav-link pagination-next" style="display: inline-flex; width: auto; margin: 0 auto;">
+                    Відкрити PON Designer
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                </a>
+            </div>
+        </div>
+
+        <h2>2. Глосарій (Словник термінів)</h2>
+        <p>Перед початком роботи переконайтесь, що ви розумієте призначення ключових елементів, які будуть застосовані під час практичного завдання.</p>
+        
+        <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 8px; margin-bottom: 2rem;">
+            <li class="definition-block" style="margin: 0; padding: 0.6rem 1rem;">
+                <strong>OLT (Optical Line Terminal):</strong> Головна активна станція провайдера. Вихідна точка передачі світла для всього проєкту. У межах нашої практики виступає початком топології "Шина".
+            </li>
+            <li class="definition-block" style="margin: 0; padding: 0.6rem 1rem; border-left-color: #ff7b72;">
+                <strong>ONU (Optical Network Unit):</strong> Кінцевий оптичний термінал, який встановлюється в будинку абонента. До нього підключається роутер (Wi-Fi).
+            </li>
+            <li class="definition-block" style="margin: 0; padding: 0.6rem 1rem; border-left-color: #3fb950;">
+                <strong>FOB (Fiber Optic Box):</strong> Розподільча коробка (бокс) на стовпі вуличного освітлення/ЛЕП. Слугує вузлом для розгалуження сигналу по абонентах.
+            </li>
+            <li class="definition-block" style="margin: 0; padding: 0.6rem 1rem; border-left-color: #e3b341;">
+                <strong>FBT (Зварний дільник):</strong> Несиметричний сплітер (напр., 20/80). Дає змогу "відкусити" малу частину світла (20%) для сусідніх будинків, а більшу частину (80%) пропустити транзитом далі вздовж вулиці.
+            </li>
+            <li class="definition-block" style="margin: 0; padding: 0.6rem 1rem; border-left-color: #0d6efd;">
+                <strong>PLC (Планарний дільник):</strong> Симетричний сплітер (напр., 1x8, 1x16). Встановлюється у FOB після FBT та ділить виділений сигнал порівну між абонентами (дроп-кабелями патчкордів).
+            </li>
+            <li class="definition-block" style="margin: 0; padding: 0.6rem 1rem; border-left-color: #6f42c1;">
+                <strong>System Margin:</strong> Експлуатаційний запас оптичного бюджету (в дБ). Буферизує потужність сигналу на випадок майбутнього старіння волокна та аварійних ремонтів кабелю.
+            </li>
+            <li class="definition-block" style="margin: 0; padding: 0.6rem 1rem; border-left-color: #115c38;">
+                <strong>BOM (Bill of Materials):</strong> Відомість матеріалів або деталізований технічний кошторис. Перелік обладнання з точними кількостями (метри кабелю, кількість FOB, адаптерів), згенерований програмою.
+            </li>
+            <li class="definition-block" style="margin: 0; padding: 0.6rem 1rem; border-left-color: #d63384;">
+                <strong>CAPEX (Капітальні витрати):</strong> Кошти провайдера, які витрачаються на фізичну розбудову інфраструктури (закупівля кабелю, боксів, OLT та їх монтаж). Аналізується на Етапі 4.
+            </li>
+        </ul>
+
+        <h2>3. Інженерні умови (Правила проєктування)</h2>
+        <p>Виступаючи в ролі архітектора мережі, ви повинні дотримуватися цих професійних правил:</p>
+
+        <div class="modern-alert Energy">
+            <h4><svg class="icon-svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg> Правило 1. Запас міцності та Золоті Правила PON</h4>
+            <p><strong>Умова:</strong> Оптичний сигнал на найвіддаленішому абоненті не повинен знижуватися нижче <strong>-26 дБм</strong>. Орієнтуємося на чутливість ONU, але при потребі можна незначно виходити за межі з інженерним обґрунтуванням.</p>
+            <p style="margin-top: 10px;">Запам'ятайте два <strong>Золотих правила</strong> дизайнера мережі:
+               <br>1) <em>«Правило 30 дБ»</em> — абсолютне сумарне затухання до найвіддаленішого абонента має бути строго &lt; 30 дБ.
+               <br>2) <em>«Спліт-фактор OLT»</em> — хоча сучасні GPON OLT підтримують розподіл 1:128 на порт, для надійності та швидкісних характеристик проєктуйте <strong>одне PON-дерево (порт) на максимум 60-80 абонентів</strong>. Для великих масивів сміливо задіюйте декілька портів OLT.
+            </p>
+            <p class="rule-explanation"><strong>Чому так в житті:</strong> Оптичний бюджет розраховується із запасом (System Margin) не просто так. Оптичне волокно з роками старіє (деградує), а після стихійних лих чи обривів монтажникам доведеться зварювати кабель, що неминуче додасть нових втрат (~0.05-0.1 дБ на кожну муфту). Якщо ви спроєктуєте магістраль "впритул" до критичних -28 дБм, то після першого ж ремонту кабелю найвіддаленіші абоненти відключаться через втрату сигналу.</p>
+        </div>
+
+        <div class="modern-alert Tech">
+            <h4><svg class="icon-svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="19" r="3"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/><circle cx="18" cy="5" r="3"/></svg> Правило 2. Оптимізація та масштабування магістралі</h4>
+            <p><strong>Умова:</strong> Забороняється "Зірка" для магістралі (тягнути окреме індивідуальне волокно спеціально до кожного боксу FOB). Використовуйте асиметричні дільники з відсотковим діленням (<strong>FBT 10/90, 20/80 і т.д.</strong>) у прохідних боксах.</p>
+            <p class="rule-explanation"><strong>Масштабування:</strong> Для великих територій <strong>дозволяється і рекомендується</strong> прокладати багатоволоконні магістральні кабелі від центрального OLT відразу на кілька різних напрямків (задіюючи різні PON порти). Також хорошим тоном є закладання "темних" (вільних) жил для подальшого масштабування мережі.</p>
+        </div>
+
+        <div class="modern-alert Business">
+            <h4><svg class="icon-svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> Правило 3. Коефіцієнт проникнення</h4>
+            <p><strong>Умова:</strong> Розраховуйте кількість боксів (FOB) та портів планарних розгалужувачів (PLC) із розрахунком на 100% покриття вулиці. Але фактично підключайте ONU лише до <strong>50-60%</strong> будинків.</p>
+            <p class="rule-explanation"><strong>Чому так в житті:</strong> Інфраструктура (стовпи, кабель) будується один раз. Провайдер підключатиме абонентів поступово роками, тому біля кожної хати обов'язково має бути бокс із вільним портом на майбутнє.</p>
+        </div>
+
+        <h2 style="text-align: center; margin-top: 3rem; margin-bottom: 1.5rem;">4. Послідовність виконання (Хід роботи)</h2>
+        <p>Ваш варіант складається з 4-х етапів (трьох мап різної складності та економічного аналізу). Для кожної мапи у вас буде своя координата (див. Таблицю під завданням).</p>
+
+        <ol style="margin-bottom: 2rem;">
+            <li style="margin-bottom: 15px;"><strong>Етап 1 (Базова Шина):</strong> Перейдіть до вказаної короткої локації. Спроєктуйте лінійну вулицю на базі одного OLT та 2-3 боксів FOB. <strong>Завдання:</strong> Суворо дотриматися <em>Правила 2</em> (без "Зірки", магістраль будується через каскад асиметричних FBT) та <em>Правила 3</em> (забезпечити 100% покриття будинків лінією, але фактично під'єднати оптику лише до 50% абонентів для створення резерву).</li>
+            <li style="margin-bottom: 15px;"><strong>Етап 2 (Каскадування та Запас):</strong> Перейдіть до довгої вулиці (магістралі). Побудуйте оптичну лінію щонайменше з 4-5 магістральних FOB. <strong>Завдання:</strong> Навчитись "ювелірно" керувати оптичним бюджетом (<em>Правило 1</em>). Вам доведеться ретельно підбирати коефіцієнти транзитних FBT (наприклад, 10/90 для перших боксів та 40/60 для останніх), щоб "дотягнути" сигнал до найвіддаленішого абонента і не впасти нижче критичних <strong>-26 дБм</strong>.</li>
+            <li style="margin-bottom: 15px;"><strong>Етап 3 (Складна топографія):</strong> Відкрийте мапу з розгалуженням. Оскільки такі приватні сектори можуть налічувати сотні будинків, <strong>обмежте зону проєктування до 60-100 будинків</strong> навколо координати. <strong>Завдання:</strong> Синергія всіх правил. Задійте декілька портів OLT та побудуйте декілька магістральних гілок (для різних вулиць). Продумайте оптимізацію мережі: де зручно використовувати багатоволоконні кабелі, щоб не тягнути 10 окремих дротів, залишаючи вільні жили про запас.</li>
+            <li><strong>Етап 4 (Звітність та Економіка):</strong> Виконується персонально для <strong>кожної мапи</strong> (Етап 1, 2, 3) окремо. Для кожної з трьох мап необхідно згенерувати та додати до звіту повний пакет документів: схема, топологія, детальний кошторис (BOM) із цінами (див. розділ вимог до звіту).</li>
+        </ol>
+
+        <h2>5. Таблиця варіантів (Координати локацій)</h2>
+        <p>Знайдіть свій номер варіанту та скопіюйте координати по черзі для кожного Етапу. <em>(Внизу екрана PON Designer є поле <i class="fa-solid fa-magnifying-glass" style="color:var(--text-muted)"></i> Адреса або координати. Вставте їх туди і натисніть Enter)</em>.</p>
+        
+        <div class="modern-alert Info compact">
+            <i class="fa-solid fa-chalkboard-user"></i>
+            <div>
+                <strong>Розподіл варіантів за журналом:</strong> прикріплено в Classroom до завдання<br>
+                <em>«Лабораторна робота №1-20 (40 годин). Проєктування архітектури PON-мереж для приватного сектору з урахуванням інженерних та економічних факторів»</em><br>
+                <span style="color: var(--text-muted); font-size: 0.85rem;">(знаходиться у темі «Лабораторні роботи»)</span>
+            </div>
+        </div>
+        
+        <div class="table-responsive">
+            <table class="sim-table" style="font-size: 0.9rem;">
+                <thead>
+                    <tr>
+                        <th style="width: 8%;">№</th>
+                        <th style="width: 23%;">Етап 1 (Мапа-1)</th>
+                        <th style="width: 23%;">Етап 2 (Мапа-2)</th>
+                        <th style="width: 23%;">Етап 3 (Мапа-3)</th>
+                        <th style="width: 23%;">Етап 4 (BOM)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="font-weight: bold; text-align: center;">1</td>
+                        <td>Приватний сектор<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">50.3802, 30.6158</code></td>
+                        <td>Довга вулиця<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">50.3611, 30.6266</code></td>
+                        <td>Сітка ліній<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">50.3828, 30.6115</code></td>
+                        <td style="text-align: center;">Усі 3 мапи</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold; text-align: center;">2</td>
+                        <td>Приватний сектор<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">49.844266, 23.925210</code></td>
+                        <td>Протяжна вулиця (донизу)<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">49.835534, 23.871416</code></td>
+                        <td>Складний вузол<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">49.838248, 23.895064</code></td>
+                        <td style="text-align: center;">Усі 3 мапи</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold; text-align: center;">3</td>
+                        <td>Приватний сектор<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">46.420669, 30.719127</code></td>
+                        <td>Довга ділянка (ліворуч)<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">46.419688, 30.742128</code></td>
+                        <td>Перехрестя<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">46.425667, 30.735848</code></td>
+                        <td style="text-align: center;">Усі 3 мапи</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold; text-align: center;">4</td>
+                        <td>Приватний сектор<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">48.477639, 34.901257</code></td>
+                        <td>Магістраль (праворуч)<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">48.474933, 34.890245</code></td>
+                        <td>Щільна забудова<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">48.469559, 34.916966</code></td>
+                        <td style="text-align: center;">Усі 3 мапи</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold; text-align: center;">5</td>
+                        <td>Приватний сектор<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">50.018165, 36.280221</code></td>
+                        <td>Прогін (праворуч)<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">50.009425, 36.264459</code></td>
+                        <td>Лабіринт вулиць<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">50.007087, 36.268547</code></td>
+                        <td style="text-align: center;">Усі 3 мапи</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold; text-align: center;">6</td>
+                        <td>Приватний сектор<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">49.259077, 28.443360</code></td>
+                        <td>Лінія (донизу)<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">49.260700, 28.465842</code></td>
+                        <td>Складна топографія<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">49.250846, 28.447325</code></td>
+                        <td style="text-align: center;">Усі 3 мапи</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold; text-align: center;">7</td>
+                        <td>Приватний сектор<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">49.624046, 34.575357</code></td>
+                        <td>Заміська вулиця (донизу)<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">49.626381, 34.577181</code></td>
+                        <td>Розгалуження<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">49.631261, 34.561111</code></td>
+                        <td style="text-align: center;">Усі 3 мапи</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold; text-align: center;">8</td>
+                        <td>Приватний сектор<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">49.483551, 32.009593</code></td>
+                        <td>Прибережна лінія (напівколо)<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">49.481879, 32.011893</code></td>
+                        <td>Перехрестя<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">49.482687, 31.990079</code></td>
+                        <td style="text-align: center;">Усі 3 мапи</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold; text-align: center;">9</td>
+                        <td>Приватний сектор<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">47.035826, 32.004236</code></td>
+                        <td>Довга пряма (догори)<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">47.034001, 32.011224</code></td>
+                        <td>Провулки<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">47.034108, 32.026356</code></td>
+                        <td style="text-align: center;">Усі 3 мапи</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold; text-align: center;">10</td>
+                        <td>Приватний сектор<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">48.888752, 24.739494</code></td>
+                        <td>Протяжна вулиця (догори)<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">48.876065, 24.733942</code></td>
+                        <td>Складний вузол<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">48.888370, 24.732372</code></td>
+                        <td style="text-align: center;">Усі 3 мапи</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2>6. Вимоги до оформлення звіту</h2>
+        <ul style="list-style-type: none; padding-left: 0;">
+            <li><strong>1. Преамбула (Титульна частина)</strong><br>
+                Звіт повинен починатися з титульної частини, що містить ПІБ студента, групу, номер та тему практичної роботи. <em>(Зразок титульної сторінки розміщено в Classroom у темі «Навчально-методичні матеріали дисципліни "Практика з КСМ"»).</em></li>
+            <li style="margin-top: 1rem;"><strong>2. Хід роботи</strong><br>
+                Послідовний опис виконання <strong>всіх трьох етапів (Сценаріїв)</strong>. Оскільки PON Designer формує розширений звіт, для <strong>кожної мапи окремо</strong> необхідно надати:
+                <ul style="list-style-type: disc; padding-left: 1.5rem; margin-top: 0.5rem; margin-bottom: 0.5rem;">
+                    <li>Скриншот робочої зони PON Designer із побудованою мережею.</li>
+                    <li>Експортоване зображення структурної топології дерева мережі (через вбудовану кнопку «⬇ PNG» у вікні топології симулятора).</li>
+                    <li>Експортований із симулятора звіт-кошторис (BOM таблиця) з переліком обладнання, розрахунком затухання та підставленими актуальними ринковими цінами.</li>
+                    <li>Окремий індивідуальний файл збереженого проєкту у форматі <code>.json</code>.</li>
+                </ul>
+                <div class="modern-alert" style="margin-top: 15px; padding: 15px; border-left-color: #f59e0b; background-color: #fffbeb;">
+                    <h4 style="color: #b45309; margin-bottom: 5px;"><svg class="icon-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: -3px; margin-right: 5px;"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg> Альтернативний варіант (Виконання вручну)</h4>
+                    <p style="font-size: 0.95rem; line-height: 1.5; color: #92400e; margin-top: 8px;">
+                        Якщо ви вирішили <strong>не використовувати</strong> програму-симулятор, для кожної з трьох мап ви повинні надати власноруч складений звіт, що включає:
+                        <ul style="list-style-type: circle; padding-left: 1.5rem; margin-top: 0.5rem; color: #92400e; font-size: 0.95rem;">
+                            <li>Графічну схему спроєктованої мережі, нанесену поверх скриншоту локації (можна намалювати у Paint або іншому простому редакторі).</li>
+                            <li>Ручний математичний розрахунок оптичного бюджету (затухань) для магістральних жил і абонентських гілок. <strong>Рекомендація:</strong> скористайтеся прикладами з <a href="Lection3.html" style="color: #92400e; text-decoration: underline; font-weight: bold;">Лекції 3</a> і побудуйте схематичне зображення затухань у вигляді блок-схеми (аналог тої, яку алгоритм "Mermaid" генерує автоматично). Для малювання таких блок-схем чудово підійдуть <strong>Draw.io</strong>, <strong>MS PowerPoint</strong> або <strong>MS Visio</strong>.</li>
+                            <li>Власноруч складену таблицю кошторису з переліком всього обладнання, довжин кабелю та актуальними цінами.</li>
+                        </ul>
+                    </p>
+                </div>
+            </li>
+            <li style="margin-top: 1rem;"><strong>3. Відповіді на контрольні запитання</strong><br>
+                Змістовні відповіді на запитання нижче, що демонструють розуміння теоретичних основ та специфіки розрахунків.</li>
+            <li style="margin-top: 1rem;"><strong>4. Висновок</strong><br>
+                Оскільки робота масштабна і виконується на трьох різних за складністю об'єктах, висновок має бути деталізованим та структурованим. Він повинен містити:
+                <ul style="list-style-type: disc; padding-left: 1.5rem; margin-top: 0.5rem; margin-bottom: 0.5rem;">
+                    <li><strong>Аналіз результатів:</strong> Яка різниця між проєктуванням лінійної вулиці (Етап 1) та розгалуженої складної забудови (Етап 3)?</li>
+                    <li><strong>Експлуатаційні показники:</strong> Чи вдалося витримати оптичний бюджет (до -26 дБм) на всіх мапах? Що було найслабкішою ланкою (каскад дільників чи довжина кабелю)?</li>
+                    <li><strong>Економічна доцільність:</strong> Який з трьох проєктів виявився найдорожчим (CAPEX) і чим це обґрунтовано (кількість обладнання, оптичні втрати)?</li>
+                </ul>
+                <div class="modern-alert Tech" style="margin-top: 15px; padding: 15px;">
+                    <h4><svg class="icon-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: -3px; margin-right: 5px;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Приклад якісного висновку:</h4>
+                    <p style="font-style: italic; font-size: 0.95rem; line-height: 1.5; color: var(--text-color);">
+                        &laquo;Під час виконання практичної роботи було успішно спроєктовано три мережі PON за топологією "Шина". На базовій мапі (Етап 1) бюджет склав комфортні -19 дБм. Однак на Етапі 2 (довга траса) виникли технічні труднощі: сигнал на найбільш віддаленій ONU впав до критичних -27 дБм. Це було вирішено шляхом оптимізації перших FBT дільників з 20/80 на 10/90. Найбільш капіталомістким (найдорожчим у BOM) виявився Етап 3 через потребу прокладати паралельні магістральні кабелі для розгалужених вулиць. Практично закріплено навички роботи у PON Network Designer, розрахунку затухання та економіки CAPEX.&raquo;
+                    </p>
+                </div>
+            </li>
+            <li style="margin-top: 1rem;"><strong>5. Здача роботи</strong><br>
+                Сформований звіт та всі графічні/системні додатки (файли <code>.json</code>) необхідно прикріпити до відповідного завдання в системі Classroom.
+                
+                <div class="modern-alert Info compact" style="margin-bottom: 0;">
+                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                    <div>
+                        <strong>Куди вантажити звітність:</strong> завдання<br>
+                        <em>«Лабораторна робота №1-20 (40 годин). Проєктування архітектури PON-мереж для приватного сектору з урахуванням інженерних та економічних факторів»</em><br>
+                        <span style="color: var(--text-muted); font-size: 0.85rem;">(знаходиться у темі «Лабораторні роботи»)</span>
+                    </div>
+                </div>
+            </li>
+        </ul>
+
+        <div style="border-top: 1px solid rgba(0,0,0,0.1); margin-top: 3rem; padding-top: 2rem;">
+            <h2>7. Контрольні запитання</h2>
+            <ol>
+                <li>В чому полягає різність між симетричним планарним дільником (PLC) та несиметричним зварним (FBT)?</li>
+                <li>Чому при побудові топології "Шина" у приватному секторі використання дільників FBT є більш рентабельним за розведення окремих магістралей до кожного FOB?</li>
+                <li>Яка максимальна кількість абонентів може бути підключена до одного PON-порту OLT без втрати надійності за стандартом GPON?</li>
+                <li>Що таке експлуатаційний запас (System Margin) та чому його закладають при розрахунку втрат?</li>
+                <li>Чому на етапі монтажу боксів (FOB) використовують коефіцієнт покриття 100%, навіть якщо підключається менше абонентів?</li>
+            </ol>
+        </div>
+
+    </div>
+
+
+
+</body>
+</html>
