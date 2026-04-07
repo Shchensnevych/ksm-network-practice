@@ -316,6 +316,72 @@
                     <li>Експортований із симулятора звіт-кошторис (BOM таблиця) з переліком обладнання, розрахунком затухання та підставленими актуальними ринковими цінами.</li>
                     <li>Окремий індивідуальний файл збереженого проєкту у форматі <code>.json</code>.</li>
                 </ul>
+
+                <div class="modern-alert" style="margin-top: 15px; padding: 15px; border-left-color: #3b82f6; background-color: #eff6ff;">
+                    <h4 style="color: #1d4ed8; margin-bottom: 8px;"><i class="fa-solid fa-file-invoice-dollar" style="margin-right: 5px;"></i> Як формується кошторис (BOM) у PON Designer</h4>
+                    <div style="font-size: 0.93rem; line-height: 1.6; color: #1e3a8a; margin-top: 8px;">
+                        <p style="margin-bottom: 10px;">Експортована BOM-таблиця (CSV) відкривається в <b>Excel</b> або <b>Google Таблицях</b>. Файл вже містить формули автоматичного підрахунку (<code>=Кількість × Ціна</code>); вам залишається лише внести ринкові ціни. Для позицій у <strong>метрах (м)</strong> вказуйте вартість <strong>за 1 метр</strong>, для решти — <strong>за 1 штуку</strong>.</p>
+
+                        <p style="margin-bottom: 6px; font-weight: bold; color: #1d4ed8;">Таблиця складається із 7 категорій:</p>
+
+                        <details open style="margin-bottom: 8px; border: 1px solid #bfdbfe; border-radius: 6px; background: #f0f7ff; padding: 8px 10px;">
+                            <summary style="cursor: pointer; font-weight: bold; color: #1e40af;">1. Активне обладнання</summary>
+                            <ul style="list-style-type: circle; padding-left: 1.5rem; margin-top: 4px; margin-bottom: 0;">
+                                <li><strong>OLT (Optical Line Terminal)</strong> — головна станція провайдера. Одна OLT обслуговує до 4 незалежних PON-дерев по 64 абоненти кожне. <em>Див. <a href="Lection2.html" style="color: #1e40af; text-decoration: underline;">Лекція 2, §2</a>.</em></li>
+                                <li><strong>SFP-модуль PON C++</strong> — лазерний трансивер, що вставляється у кожен PON-порт OLT. Алгоритм автоматично додає стільки модулів, скільки портів задано у налаштуваннях OLT.</li>
+                            </ul>
+                        </details>
+
+                        <details open style="margin-bottom: 8px; border: 1px solid #bfdbfe; border-radius: 6px; background: #f0f7ff; padding: 8px 10px;">
+                            <summary style="cursor: pointer; font-weight: bold; color: #1e40af;">2. Пасивне обладнання</summary>
+                            <ul style="list-style-type: circle; padding-left: 1.5rem; margin-top: 4px; margin-bottom: 0;">
+                                <li><strong>Бокс PON розподільчий (FOB)</strong> — коробка на стовпі або стіні, в якій монтують касети зі сплітерами та зварюють волокна. Алгоритм аналізує кількість підключених дропів та підставляє конкретну комерційну модель: <em>Crosver FOB-02-04</em> (до 4 абонентів), <em>FOB-03-08</em> (до 8), <em>FOB-04-16</em> (до 16) тощо. <em>Див. <a href="Lection2.html" style="color: #1e40af; text-decoration: underline;">Лекція 2, §3.1</a> (ODN та структура кросування).</em></li>
+                                <li><strong>Крос-муфта оптична (FOSC)</strong> — герметичний контейнер для транзитного зварювання магістральних кабелів без дропів. Модель підбирається за кількістю зварок: <em>FOSC-M</em> (до 12), <em>FOSC-400</em> (до 48) тощо.</li>
+                            </ul>
+                        </details>
+
+                        <details open style="margin-bottom: 8px; border: 1px solid #bfdbfe; border-radius: 6px; background: #f0f7ff; padding: 8px 10px;">
+                            <summary style="cursor: pointer; font-weight: bold; color: #1e40af;">3. Сплітери оптичні</summary>
+                            <ul style="list-style-type: circle; padding-left: 1.5rem; margin-top: 4px; margin-bottom: 0;">
+                                <li><strong>FBT (Fused Biconical Taper)</strong> — зварний дільник з несиметричним поділом (5/95, 20/80, 30/70, 50/50). Використовується для побудови топології «Шина» — транзитна магістраль із каскадним відгалуженням. <em>Див. <a href="Lection2.html" style="color: #1e40af; text-decoration: underline;">Лекція 2, §3.4</a> (фізика FBT) та <a href="Lection3.html" style="color: #1e40af; text-decoration: underline;">Лекція 3, Табл. 3.1</a> (затухання).</em></li>
+                                <li><strong>PLC (Planar Lightwave Circuit)</strong> — планарний дільник із симетричним поділом на 2/4/8/16/32/64 виходи. Встановлюється у кожному FOB для підключення кінцевих ONU. <em>Див. <a href="Lection2.html" style="color: #1e40af; text-decoration: underline;">Лекція 2, §3.4</a> (фізика PLC) та <a href="Lection3.html" style="color: #1e40af; text-decoration: underline;">Лекція 3, Табл. 3.2</a> (затухання).</em></li>
+                            </ul>
+                        </details>
+
+                        <details open style="margin-bottom: 8px; border: 1px solid #bfdbfe; border-radius: 6px; background: #f0f7ff; padding: 8px 10px;">
+                            <summary style="cursor: pointer; font-weight: bold; color: #1e40af;">4. Кабелі магістральні</summary>
+                            <ul style="list-style-type: circle; padding-left: 1.5rem; margin-top: 4px; margin-bottom: 0;">
+                                <li><strong>Кабель оптичний NF</strong> — магістральний кабель (N — кількість волокон: 1F, 2F, 4F, 8F…). Ціна вказується <strong>за 1 метр</strong>. Симулятор автоматично сумує метраж усіх прокладених ліній однакової ємності.</li>
+                            </ul>
+                        </details>
+
+                        <details open style="margin-bottom: 8px; border: 1px solid #bfdbfe; border-radius: 6px; background: #f0f7ff; padding: 8px 10px;">
+                            <summary style="cursor: pointer; font-weight: bold; color: #1e40af;">5. Кабелі абонентські</summary>
+                            <ul style="list-style-type: circle; padding-left: 1.5rem; margin-top: 4px; margin-bottom: 0;">
+                                <li><strong>Drop-кабель (вуличний)</strong> — одноволоконний кабель із тросом (самонесучий), що прокладається від стовпа до будинку абонента. Ціна — <strong>за 1 метр</strong>.</li>
+                            </ul>
+                        </details>
+
+                        <details open style="margin-bottom: 8px; border: 1px solid #bfdbfe; border-radius: 6px; background: #f0f7ff; padding: 8px 10px;">
+                            <summary style="cursor: pointer; font-weight: bold; color: #1e40af;">6. Абонентське обладнання</summary>
+                            <ul style="list-style-type: circle; padding-left: 1.5rem; margin-top: 4px; margin-bottom: 0;">
+                                <li><strong>ONU (Optical Network Unit)</strong> — абонентський термінал для кожного будинку. Симулятор підраховує по 1 шт. за кожний ONU-вузол на карті.</li>
+                            </ul>
+                        </details>
+
+                        <details open style="margin-bottom: 8px; border: 1px solid #bfdbfe; border-radius: 6px; background: #f0f7ff; padding: 8px 10px;">
+                            <summary style="cursor: pointer; font-weight: bold; color: #1e40af;">7. Монтажні матеріали</summary>
+                            <ul style="list-style-type: circle; padding-left: 1.5rem; margin-top: 4px; margin-bottom: 0;">
+                                <li><strong>Адаптер оптичний SC/UPC</strong> — посадкове місце для підключення сплітера до патчкорду всередині розподільчого боксу (FOB). Кожен дроп-абонент = 1 адаптер. <em>Див. <a href="Lection2.html" style="color: #1e40af; text-decoration: underline;">Лекція 2, §3.3</a> (конектори та адаптери, полірування UPC/APC).</em></li>
+                                <li><strong>Пігтейл оптичний SC/UPC</strong> — заводський відрізок волокна з конектором, який зварюється з drop-кабелем усередині боксу. <em>Див. <a href="Lection2.html" style="color: #1e40af; text-decoration: underline;">Лекція 2, §3.1</a> (пігтейли та кроси).</em></li>
+                                <li><strong>Конектор швидкої фіксації (Fast Connector)</strong> — механічний з'єднувач для абонентського drop-кабелю (по 2 шт. на кожне підключення: один на стовпі, інший у будинку). Додає ~0,5 дБ механічних втрат. <em>Див. <a href="Lection3.html" style="color: #1e40af; text-decoration: underline;">Лекція 3</a> (втрати на конекторах).</em></li>
+                                <li><strong>Гільза термоусаджувальна (КДЗС)</strong> — захисна трубка для кожного місця зварювання волокон (Core → Core, Core → Splitter). Кількість = загальній кількості зварок у касетах.</li>
+                                <li><strong>Затискач натяжний магістральний</strong> — кріплення магістрального кабелю (без тросу або зі зовнішнім тросом) до опори на трасі. Алгоритм додає по 2 шт. на кожну кабельну лінію (вхід + вихід).</li>
+                                <li><strong>Затискач натяжний Н3 (на опорі)</strong> та <strong>анкерний (на стороні абонента)</strong> — пара затискачів для кожного drop-кабелю: один на стовпі, інший на фасаді будинку.</li>
+                            </ul>
+                        </details>
+                    </div>
+                </div>
                 <div class="modern-alert" style="margin-top: 15px; padding: 15px; border-left-color: #f59e0b; background-color: #fffbeb;">
                     <h4 style="color: #b45309; margin-bottom: 5px;"><svg class="icon-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: -3px; margin-right: 5px;"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg> Альтернативний варіант (Виконання вручну)</h4>
                     <p style="font-size: 0.95rem; line-height: 1.5; color: #92400e; margin-top: 8px;">
