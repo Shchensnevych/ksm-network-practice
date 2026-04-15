@@ -763,3 +763,24 @@ li::marker {
   .global-nav-link { padding: 0.5rem; font-size: 0.85rem; }
 }
 
+/* ── Glossary accordion (translation blocks under images) ── */
+.glossary-accordion {
+  margin-top: 10px;
+  border: 1px solid #bfdbfe;
+  border-radius: 6px;
+  background: #f0f7ff;
+  padding: 8px 12px;
+  font-size: 0.9rem;
+  text-align: left;
+}
+.glossary-accordion summary {
+  cursor: pointer;
+  font-weight: bold;
+  color: #1e40af;
+}
+.glossary-accordion ul {
+  margin-top: 6px;
+  padding-left: 1.2rem;
+  line-height: 1.7;
+}
+
