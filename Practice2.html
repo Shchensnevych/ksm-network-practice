@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Практична робота №2 (FTTB/FTTH) - Комп'ютерні мережі</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .icon-svg { margin-right: 8px; vertical-align: bottom; }
+        .rule-explanation { font-size: 0.95rem; font-style: italic; margin-top: 8px; line-height: 1.5; }
+        .modern-alert.Energy .rule-explanation { color: #115c38; }
+        .modern-alert.Tech .rule-explanation { color: #552d9b; }
+        .modern-alert .rule-explanation { color: #0d6efd; }
+        .glossary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; margin-bottom: 2rem; }
+        .glossary-card { background: var(--bg-card); padding: 15px; border-radius: 8px; box-shadow: var(--shadow-sm); border-left: 4px solid var(--primary-color); }
+        .glossary-title { font-weight: 600; color: var(--text-color); margin-bottom: 5px; display: block; }
+        .glossary-desc { font-size: 0.9rem; color: var(--text-muted); line-height: 1.4; }
+        .breadcrumb-nav { font-size: 0.95rem; color: var(--text-muted); display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-top: 1.5rem; margin-bottom: -1.5rem; max-width: 1400px; width: calc(100% - 4rem); margin-left: auto; margin-right: auto;}
+        .breadcrumb-nav a { color: var(--primary-color); text-decoration: none; font-weight: 500;}
+        .breadcrumb-nav a:hover { text-decoration: underline; }
+        
+        .pagination-container { margin-top: 2rem; margin-bottom: 3rem; background: transparent; box-shadow: none; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+        .pagination-btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 20px; border-radius: 8px; font-weight: 600; text-decoration: none; transition: all 0.3s ease; }
+        .pagination-prev { background-color: var(--bg-card); color: var(--text-color); box-shadow: var(--shadow-sm); border: 1px solid rgba(0,0,0,0.05); }
+        .pagination-prev:hover { transform: translateX(-5px); box-shadow: var(--shadow-md); }
+        .pagination-next { background-color: var(--primary-color); color: white; box-shadow: 0 4px 15px rgba(13, 110, 253, 0.3); }
+        .pagination-next:hover { transform: translateX(5px); box-shadow: 0 6px 20px rgba(13, 110, 253, 0.4); opacity: 0.9; }
+    </style>
+</head>
+<body class="home-page">
+
+    <!-- Global Navigation Bar -->
+    <nav class="global-navbar">
+        <ul class="global-nav-container">
+            <li class="global-nav-item"><a href="index.html" class="global-nav-link"><i class="fa-solid fa-home" style="margin-right:5px"></i>Головна</a></li>
+            <li class="global-nav-item"><a href="Lection1.html" class="global-nav-link">Лекція 1</a></li>
+            <li class="global-nav-item"><a href="Lection2.html" class="global-nav-link">Лекція 2</a></li>
+            <li class="global-nav-item"><a href="Lection3.html" class="global-nav-link">Лекція 3</a></li>
+            <li class="global-nav-item"><a href="Practice1.html" class="global-nav-link">Практика (PON)</a></li>
+            <li class="global-nav-item"><a href="Lection4-5.html" class="global-nav-link">Лекція 4-5</a></li>
+            <li class="global-nav-item"><a href="Lection6.html" class="global-nav-link">Лекція 6</a></li>
+            <li class="global-nav-item"><a href="Practice2.html" class="global-nav-link active">Практика (FTTB/FTTH)</a></li>
+        </ul>
+    </nav>
+
+    <header class="hero" style="border-radius: 12px; max-width: 1400px; margin: 3rem auto 2rem; padding: 4rem 2rem;">
+        <h1 style="border: none;">Створення проєкту (FTTB/FTTH) (38 годин)</h1>
+        <p>Проєктування мережі FTTB/FTTH для багатоповерхової забудови з каскадуванням MDU, PLC-розподілом та формуванням кошторису</p>
+    </header>
+
+    <div class="container">
+        
+        <h2>1. Мета та завдання роботи</h2>
+        <p><strong>Мета роботи:</strong> набуття практичних інженерних навичок проєктування мереж FTTB та FTTH для багатоповерхової забудови (міста, СМТ). Завдання передбачає вивчення принципів каскадного підключення будинків (MDU), транзитного кросування, PLC-каскадування, контролю оптичного бюджету та навантаження портів OLT, а також формування кошторису обладнання (BOM) з урахуванням антивандальних боксів, комутаторів доступу та SFP-модулів.</p>
+
+        <div class="modern-alert Tech">
+            <h4>
+                <svg class="icon-svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                Інструмент для симуляції
+            </h4>
+            <p>Усі етапи роботи (побудова топології, каскадування MDU, розрахунок сигналу, BOM та звітність) виконуються в інтерактивному середовищі <strong>PON Network Designer</strong>.</p>
+            <div style="margin-top: 15px; text-align: center;">
+                <a href="https://shchensnevych.github.io/pon-network-designer/pon-app/" target="_blank" class="nav-link pagination-next" style="display: inline-flex; width: auto; margin: 0 auto;">
+                    Відкрити PON Designer
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                </a>
+            </div>
+        </div>
+
+        <h2>2. Глосарій (Словник термінів)</h2>
+        <p>Перед початком роботи переконайтесь, що ви розумієте призначення ключових елементів та технологій, які будуть застосовані під час практичного завдання.</p>
+        
+        <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 8px; margin-bottom: 2rem;">
+            <li class="definition-block" style="margin: 0; padding: 0.6rem 1rem;">
+                <strong>MDU (Multi-Dwelling Unit):</strong> Багатоповерховий будинок у симуляторі. Має два режими: FTTB (оптика до будинку) та FTTH (оптика до квартири). Налаштовуються поверхи, під'їзди, квартири та коефіцієнт проникнення.
+            </li>
+            <li class="definition-block" style="margin: 0; padding: 0.6rem 1rem; border-left-color: #ff7b72;">
+                <strong>FTTB (Fiber To The Building):</strong> Оптичне волокно доводиться до будинку. На горищі/в підвалі встановлюється ONU + комутатор L2, від якого по кручених парах (UTP) сигнал розводиться до квартир. Кожен MDU FTTB = 1 ONU для OLT.
+            </li>
+            <li class="definition-block" style="margin: 0; padding: 0.6rem 1rem; border-left-color: #3fb950;">
+                <strong>FTTH (Fiber To The Home):</strong> Оптичне волокно доводиться до кожної квартири. На горищі встановлюється PLC-дільник, який ділить сигнал по під'їздах та поверхах. Кожна підключена квартира = окремий ONU для OLT.
+            </li>
+            <li class="definition-block" style="margin: 0; padding: 0.6rem 1rem; border-left-color: #e3b341;">
+                <strong>Транзитне кросування:</strong> Пропуск волокон «транзитом» через сплайс-касету MDU до наступного будинку в каскадному ланцюзі. Дозволяє послідовно підключати кілька будинків від однієї гілки кабелю.
+            </li>
+            <li class="definition-block" style="margin: 0; padding: 0.6rem 1rem; border-left-color: #0d6efd;">
+                <strong>Active Ethernet (P2P):</strong> Архітектура «точка-точка» — кожен будинок отримує виділене волокно та окремий SFP-порт на OLT. Повна смуга 1 Гбіт/с на будинок без поділу.
+            </li>
+            <li class="definition-block" style="margin: 0; padding: 0.6rem 1rem; border-left-color: #6f42c1;">
+                <strong>GPON / PLC-каскад (P2MP):</strong> Архітектура «точка-до-багатьох» — одне волокно через PLC-дільник обслуговує кілька будинків. Економить порти OLT, але ділить смугу 2.5 Гбіт/с між усіма ONU на порту.
+            </li>
+            <li class="definition-block" style="margin: 0; padding: 0.6rem 1rem; border-left-color: #115c38;">
+                <strong>Антивандальний бокс:</strong> Захищена металева шафа із замком на горищі/в підвалі, де розміщується ONU, комутатор L2, блок живлення. Захищає обладнання від крадіжки та вандалізму. Див. <a href="Lection4-5.html" style="color: #115c38; text-decoration: underline;">Лекція 4-5, §5.3</a>.
+            </li>
+            <li class="definition-block" style="margin: 0; padding: 0.6rem 1rem; border-left-color: #d63384;">
+                <strong>Комутатор доступу L2 (Access Switch):</strong> Ethernet-комутатор, що розподіляє сигнал між квартирами у режимі FTTB. Підбирається за кількістю абонентів: 8, 16, 24 або 48 портів. На кожен під'їзд — окремий комутатор.
+            </li>
+            <li class="definition-block" style="margin: 0; padding: 0.6rem 1rem; border-left-color: #f59e0b;">
+                <strong>BOM (Bill of Materials):</strong> Кошторис обладнання — детальний перелік матеріалів проєкту. У FTTB/FTTH включає: OLT, SFP, ONU, муфти, FOB, комутатори, антивандальні бокси, PLC-дільники, кабелі, UTP, КДЗС тощо.
+            </li>
+            <li class="definition-block" style="margin: 0; padding: 0.6rem 1rem; border-left-color: #0ea5e9;">
+                <strong>Коефіцієнт проникнення (Penetration Rate):</strong> Відсоток квартир, яким фактично надається послуга. При 40 квартирах та проникненні 50% реальних абонентів буде 20. Впливає на вибір комутатора та навантаження порту OLT.
+            </li>
+        </ul>
+
+        <h2>3. Інженерні правила (Правила проєктування)</h2>
+        <p>Виступаючи в ролі архітектора мережі FTTB/FTTH, ви повинні дотримуватися цих професійних правил:</p>
+
+        <div class="modern-alert Energy">
+            <h4><svg class="icon-svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg> Правило 1. Оптичний бюджет</h4>
+            <p><strong>Умова:</strong> Оптичний сигнал на кожному MDU (режим FTTB) або на кожній квартирі (режим FTTH) не повинен знижуватися нижче <strong>-26 дБм</strong>. Симулятор автоматично позначає порушення червоним кольором.</p>
+            <p class="rule-explanation"><strong>Чому так в житті:</strong> Для FTTB перевіряється рівень сигналу на вході SFP-модуля ONU в будинку. Для FTTH — на кожному квартирному ONU. Додаткові PLC-дільники (горищні, поверхові) суттєво збільшують загальне затухання, тому FTTH потребує ретельнішого контролю оптичного бюджету.</p>
+        </div>
+
+        <div class="modern-alert Tech">
+            <h4><svg class="icon-svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="19" r="3"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/><circle cx="18" cy="5" r="3"/></svg> Правило 2. Ліміт ONU та абонентів на порт OLT</h4>
+            <p><strong>Умова:</strong> На один PON-порт OLT дозволяється підключати <strong>максимум 64 ONU</strong> (стандарт GPON). Рекомендований ліміт — <strong>≤ 32 ONU на порт</strong> (для запасу на масштабування).</p>
+            <ul>
+                <li><strong>Режим FTTB:</strong> 1 MDU = 1 ONU → при 10 будинках на PLC потрібно 10 ONU на порт.</li>
+                <li><strong>Режим FTTH:</strong> 1 квартира = 1 ONU → 5-поверхівка з 2 під'їздами та 50% проникненням = ~20 ONU <strong>лише з одного будинку!</strong></li>
+                <li><strong>Сумарна кількість абонентів:</strong> не більше <strong>500 абонентів на порт</strong> для прийнятної пропускної здатності (2.5 Гбіт/с ділиться між усіма).</li>
+            </ul>
+            <p class="rule-explanation"><strong>Чому так в житті:</strong> Механізм TDMA (Time Division Multiple Access) ділить часові слоти між усіма ONU на порту. Чим більше ONU — тим менше часу (і швидкості) отримує кожен. Перевантажений порт = низька швидкість для всіх абонентів.</p>
+        </div>
+
+        <div class="modern-alert Business">
+            <h4><svg class="icon-svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> Правило 3. Параметри MDU та коефіцієнт проникнення</h4>
+            <p><strong>Умова:</strong> Кожен MDU повинен мати реалістичні параметри будинку:</p>
+            <ul>
+                <li><strong>Поверхів:</strong> від 3 до 9 (типово 5)</li>
+                <li><strong>Під'їздів:</strong> від 1 до 4 (типово 2)</li>
+                <li><strong>Квартир на поверсі:</strong> від 2 до 4 (типово 4)</li>
+                <li><strong>Коефіцієнт проникнення:</strong> 50–60% (не всі квартири підключено)</li>
+            </ul>
+            <p>Комутатор доступу L2 підбирається автоматично: <strong>8-портовий</strong> до 8 абонентів, <strong>16-портовий</strong> до 16, <strong>24-портовий</strong> або <strong>48-портовий</strong> для великих під'їздів. На кожен під'їзд — окремий комутатор.</p>
+            <p class="rule-explanation"><strong>Чому так в житті:</strong> Провайдер будує інфраструктуру на 100% квартир, але підключає поступово. Комутатор обирається з запасом на майбутніх абонентів. Непідключений порт — це можливість для продажу нової послуги.</p>
+        </div>
+
+        <div class="modern-alert Info">
+            <h4><svg class="icon-svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" x2="2" y1="2" y2="22"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg> Правило 4. Каскадування та організація кабелю</h4>
+            <p><strong>Умова:</strong> Мережа повинна мати <strong>мінімум 2 гілки</strong> від муфти. Обов'язково використовувати каскадну заміну кабелю відповідно до зменшення потрібних волокон:</p>
+            <ul>
+                <li><strong>24F → 12F</strong> — після муфти, коли волокна розділяються на гілки</li>
+                <li><strong>12F → 8F</strong> — коли залишається менше 9 робочих волокон</li>
+                <li><strong>8F → 4F</strong> — коли залишається менше 5 робочих волокон</li>
+            </ul>
+            <p><strong>Транзитне кросування</strong> обов'язкове: волокна, призначені для наступних будинків, пропускаються «транзитом» через касету поточного MDU.</p>
+            <p class="rule-explanation"><strong>Чому так в житті:</strong> 4-волоконний кабель суттєво дешевший та легший за 12-волоконний. Заміна на кожному логічному етапі знижує загальний CAPEX проєкту.</p>
+        </div>
+
+        <div class="modern-alert" style="border-left-color: #8b5cf6; background-color: #f5f3ff;">
+            <h4 style="color: #6d28d9;"><svg class="icon-svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" x2="4" y1="22" y2="15"/></svg> Правило 5. Портова економія (PLC-каскад) — для Етапу 2+</h4>
+            <p><strong>Умова:</strong> Для мікрорайонів з більш ніж 8 будинками <strong>рекомендується</strong> використовувати PLC-каскад:</p>
+            <ul>
+                <li>Встановити PLC (1×4, 1×8) в <strong>муфті або першому MDU</strong> гілки</li>
+                <li>Від кожного виходу PLC — каскадний ланцюг MDU</li>
+                <li>Це зменшує кількість SFP-портів на OLT, але вносить додаткове затухання (~7 дБ на PLC 1×4)</li>
+            </ul>
+            <p>Студент повинен зважити: <strong>більше портів OLT (P2P) vs менше портів + PLC (P2MP)</strong>.</p>
+            <p class="rule-explanation"><strong>Чому так в житті:</strong> Порт OLT з SFP-модулем коштує значно більше, ніж один PLC-дільник. Але PLC вносить оптичні втрати та ділить смугу. Оптимальний баланс — ключова навичка інженера-проєктувальника.</p>
+        </div>
+
+        <h2 style="text-align: center; margin-top: 3rem; margin-bottom: 1.5rem;">4. Послідовність виконання (Хід роботи)</h2>
+        <p>Ваш варіант складається з 4-х етапів (трьох мап різної складності та формування кошторису). Для кожної мапи у вас буде своя координата (див. Таблицю під завданням).</p>
+
+        <ol style="margin-bottom: 2rem;">
+            <li style="margin-bottom: 15px;"><strong>Етап 1 (Базова лінія FTTB):</strong> Перейдіть до вказаної локації. Побудуйте лінійну мережу FTTB з <strong>4–6 будинками MDU</strong> на одній вулиці. <strong>Завдання:</strong> OLT → магістраль → муфта → 1 гілка каскадних MDU. Кожен будинок отримує <strong>виділене волокно</strong> (P2P). Параметри MDU: 5 поверхів, 2 під'їзди, 4 кв/поверх, проникнення 50%. Фокус: базове каскадування, транзитне кросування, підбір комутатора (<em>Правила 1, 3, 4</em>).</li>
+            <li style="margin-bottom: 15px;"><strong>Етап 2 (Розгалуження + PLC-каскад):</strong> Перейдіть до локації мікрорайону. Побудуйте мережу з муфтою та <strong>2+ гілками, 8–12 будинків MDU</strong>. <strong>Завдання:</strong> Використати PLC-каскад (PLC 1×4 або 1×8 у муфті чи першому MDU) для зменшення портів OLT. На одній гілці — PLC-каскад, на іншій можна P2P для порівняння. Застосувати каскадну заміну кабелю (12F → 8F → 4F). Контролювати ліміт ONU/порт (<em>усі 5 Правил</em>).</li>
+            <li style="margin-bottom: 15px;"><strong>Етап 3 (Гібридна мережа FTTB + FTTH):</strong> Побудуйте гібридну мережу для <strong>10–15 будинків з 3+ гілками</strong>: мінімум дві гілки у режимі <strong>FTTB</strong> та одна гілка (2–3 будинки) у режимі <strong>FTTH</strong>. Кожен MDU FTTH отримує <strong>окрему виділену жилу</strong> та окремий порт OLT. На горищі FTTH-будинку: головний PLC (1×2 або 1×4) для під'їздів → поверховий PLC (1×4 або 1×2) для квартир. Підключити <strong>50% квартир</strong>. Контролювати: кожна квартира FTTH = окремий ONU!</li>
+            <li><strong>Етап 4 (Звітність та кошторис BOM):</strong> Виконується для <strong>кожної мапи</strong> (Етап 1, 2, 3) окремо. Для кожного з трьох етапів необхідно згенерувати та додати до звіту повний пакет документів: карта, топологія, детальний кошторис (BOM) із цінами (див. розділ вимог до звіту).</li>
+        </ol>
+
+        <h2>5. Таблиця варіантів (Координати локацій)</h2>
+        <p>Знайдіть свій номер варіанту та скопіюйте координати по черзі для кожного Етапу. <em>(Внизу екрана PON Designer є поле <i class="fa-solid fa-magnifying-glass" style="color:var(--text-muted)"></i> Адреса або координати. Вставте їх туди і натисніть Enter)</em>.</p>
+        
+        <div class="modern-alert Info compact">
+            <i class="fa-solid fa-chalkboard-user"></i>
+            <div>
+                <strong>Розподіл варіантів за журналом:</strong> прикріплено в Classroom до завдання<br>
+                <em>«Створення проекту комп'ютерної мережі міста за технологією FTTB/FTTH»</em><br>
+                <span style="color: var(--text-muted); font-size: 0.85rem;">(знаходиться у темі «Лабораторні роботи»)</span>
+            </div>
+        </div>
+        
+        <div class="table-responsive">
+            <table class="sim-table" style="font-size: 0.9rem;">
+                <thead>
+                    <tr>
+                        <th style="width: 6%;">№</th>
+                        <th style="width: 24%;">Етап 1 (Лінія FTTB)</th>
+                        <th style="width: 24%;">Етап 2 (Розгалуження)</th>
+                        <th style="width: 24%;">Етап 3 (Гібрид)</th>
+                        <th style="width: 22%;">Етап 4 (BOM)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="font-weight: bold; text-align: center;">1</td>
+                        <td>Вінниця<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">49.2125, 28.4685</code></td>
+                        <td>Вінниця<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">49.2098, 28.4712</code></td>
+                        <td>Вінниця<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">49.20932, 28.47503</code></td>
+                        <td style="text-align: center;">Усі 3 мапи</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold; text-align: center;">2</td>
+                        <td>Хмельницький<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">49.4155, 26.9785</code></td>
+                        <td>Хмельницький<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">49.4178, 26.9820</code></td>
+                        <td>Хмельницький<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">49.4195, 26.9755</code></td>
+                        <td style="text-align: center;">Усі 3 мапи</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold; text-align: center;">3</td>
+                        <td>Полтава<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">49.5835, 34.5490</code></td>
+                        <td>Полтава<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">49.5870, 34.5520</code></td>
+                        <td>Полтава<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">49.5812, 34.5455</code></td>
+                        <td style="text-align: center;">Усі 3 мапи</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold; text-align: center;">4</td>
+                        <td>Черкаси<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">49.4385, 32.0510</code></td>
+                        <td>Черкаси<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">49.4420, 32.0475</code></td>
+                        <td>Черкаси<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">49.44302, 32.04750</code></td>
+                        <td style="text-align: center;">Усі 3 мапи</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold; text-align: center;">5</td>
+                        <td>Кропивницький<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">48.5085, 32.2615</code></td>
+                        <td>Кропивницький<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">48.51369, 32.26046</code></td>
+                        <td>Кропивницький<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">48.51331, 32.26663</code></td>
+                        <td style="text-align: center;">Усі 3 мапи</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold; text-align: center;">6</td>
+                        <td>Рівне<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">50.6185, 26.2475</code></td>
+                        <td>Рівне<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">50.6215, 26.2510</code></td>
+                        <td>Рівне<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">50.62628, 26.24473</code></td>
+                        <td style="text-align: center;">Усі 3 мапи</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold; text-align: center;">7</td>
+                        <td>Тернопіль<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">49.55057, 25.58002</code></td>
+                        <td>Тернопіль<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">49.56108, 25.58677</code></td>
+                        <td>Тернопіль<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">49.5505, 25.5880</code></td>
+                        <td style="text-align: center;">Усі 3 мапи</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold; text-align: center;">8</td>
+                        <td>Чернівці<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">48.2925, 25.9355</code></td>
+                        <td>Чернівці<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">48.2890, 25.9390</code></td>
+                        <td>Чернівці<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">48.29325, 25.93262</code></td>
+                        <td style="text-align: center;">Усі 3 мапи</td>
+                    </tr>
+                    <!-- Рандомізовані варіанти -->
+                    <tr>
+                        <td style="font-weight: bold; text-align: center;">9</td>
+                        <td>Хмельницький<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">49.4155, 26.9785</code></td>
+                        <td>Полтава<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">49.5870, 34.5520</code></td>
+                        <td>Вінниця<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">49.20932, 28.47503</code></td>
+                        <td style="text-align: center;">Усі 3 мапи</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold; text-align: center;">10</td>
+                        <td>Полтава<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">49.5835, 34.5490</code></td>
+                        <td>Черкаси<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">49.4420, 32.0475</code></td>
+                        <td>Тернопіль<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">49.5505, 25.5880</code></td>
+                        <td style="text-align: center;">Усі 3 мапи</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold; text-align: center;">11</td>
+                        <td>Черкаси<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">49.4385, 32.0510</code></td>
+                        <td>Рівне<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">50.6215, 26.2510</code></td>
+                        <td>Чернівці<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">48.29325, 25.93262</code></td>
+                        <td style="text-align: center;">Усі 3 мапи</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold; text-align: center;">12</td>
+                        <td>Кропивницький<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">48.5085, 32.2615</code></td>
+                        <td>Вінниця<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">49.2098, 28.4712</code></td>
+                        <td>Хмельницький<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">49.4195, 26.9755</code></td>
+                        <td style="text-align: center;">Усі 3 мапи</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold; text-align: center;">13</td>
+                        <td>Рівне<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">50.6185, 26.2475</code></td>
+                        <td>Чернівці<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">48.2890, 25.9390</code></td>
+                        <td>Кропивницький<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">48.51331, 32.26663</code></td>
+                        <td style="text-align: center;">Усі 3 мапи</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold; text-align: center;">14</td>
+                        <td>Тернопіль<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">49.55057, 25.58002</code></td>
+                        <td>Кропивницький<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">48.51369, 32.26046</code></td>
+                        <td>Полтава<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">49.5812, 34.5455</code></td>
+                        <td style="text-align: center;">Усі 3 мапи</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold; text-align: center;">15</td>
+                        <td>Чернівці<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">48.2925, 25.9355</code></td>
+                        <td>Тернопіль<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">49.56108, 25.58677</code></td>
+                        <td>Черкаси<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">49.44302, 32.04750</code></td>
+                        <td style="text-align: center;">Усі 3 мапи</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold; text-align: center;">16</td>
+                        <td>Вінниця<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">49.2125, 28.4685</code></td>
+                        <td>Хмельницький<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">49.4178, 26.9820</code></td>
+                        <td>Рівне<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">50.62628, 26.24473</code></td>
+                        <td style="text-align: center;">Усі 3 мапи</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold; text-align: center;">17</td>
+                        <td>Черкаси<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">49.4385, 32.0510</code></td>
+                        <td>Вінниця<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">49.2098, 28.4712</code></td>
+                        <td>Чернівці<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">48.29325, 25.93262</code></td>
+                        <td style="text-align: center;">Усі 3 мапи</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold; text-align: center;">18</td>
+                        <td>Кропивницький<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">48.5085, 32.2615</code></td>
+                        <td>Полтава<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">49.5870, 34.5520</code></td>
+                        <td>Хмельницький<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">49.4195, 26.9755</code></td>
+                        <td style="text-align: center;">Усі 3 мапи</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold; text-align: center;">19</td>
+                        <td>Рівне<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">50.6185, 26.2475</code></td>
+                        <td>Кропивницький<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">48.51369, 32.26046</code></td>
+                        <td>Вінниця<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">49.20932, 28.47503</code></td>
+                        <td style="text-align: center;">Усі 3 мапи</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold; text-align: center;">20</td>
+                        <td>Тернопіль<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">49.55057, 25.58002</code></td>
+                        <td>Рівне<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">50.6215, 26.2510</code></td>
+                        <td>Полтава<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">49.5812, 34.5455</code></td>
+                        <td style="text-align: center;">Усі 3 мапи</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold; text-align: center;">21</td>
+                        <td>Чернівці<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">48.2925, 25.9355</code></td>
+                        <td>Черкаси<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">49.4420, 32.0475</code></td>
+                        <td>Тернопіль<br> <code style="background: #f1f5f9; padding: 2px 4px; border-radius: 4px; color: #0d6efd;">49.5505, 25.5880</code></td>
+                        <td style="text-align: center;">Усі 3 мапи</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2>6. Вимоги до звіту</h2>
+        <p>Звіт формується як єдиний документ (Word/PDF) і містить:</p>
+
+        <ul style="margin-bottom: 2rem;">
+            <li><strong>1. Титульна сторінка</strong><br>
+                Стандартна для навчального закладу, з назвою теми та номером варіанту.</li>
+            <li style="margin-top: 1rem;"><strong>2. Результати проєктування</strong> (для кожного з 3 етапів окремо)
+                <div style="margin-top: 10px; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; background: #f8fafc;">
+                    <p style="margin-bottom: 8px;"><strong>Для кожного Етапу надати:</strong></p>
+
+                    <details open style="margin-bottom: 8px; border: 1px solid #bfdbfe; border-radius: 6px; background: #f0f7ff; padding: 8px 10px;">
+                        <summary style="cursor: pointer; font-weight: bold; color: #1e40af;">1. Скріншоти з PON Designer</summary>
+                        <ul style="list-style-type: circle; padding-left: 1.5rem; margin-top: 4px; margin-bottom: 0;">
+                            <li><strong>Карта</strong> з побудованою мережею (з видимими MDU, муфтами, кабелями)</li>
+                            <li><strong>Топологія</strong> (діаграма Mermaid — автоекспорт з симулятора)</li>
+                            <li><strong>Касета муфти</strong> (скріншот UI внутрішньої конфігурації)</li>
+                            <li><strong>Касета MDU</strong> (транзитне кросування, якщо є)</li>
+                            <li><strong>Для FTTH (Етап 3)</strong>: горищна схема під'їзду з PLC-дільниками та підключеними квартирами</li>
+                        </ul>
+                    </details>
+
+                    <details open style="margin-bottom: 8px; border: 1px solid #bfdbfe; border-radius: 6px; background: #f0f7ff; padding: 8px 10px;">
+                        <summary style="cursor: pointer; font-weight: bold; color: #1e40af;">2. Кошторис (BOM)</summary>
+                        <ul style="list-style-type: circle; padding-left: 1.5rem; margin-top: 4px; margin-bottom: 0;">
+                            <li><strong>OLT</strong> — кількість задіяних PON-портів</li>
+                            <li><strong>ONU + SFP-модулі</strong> — по 1 комплекту на MDU (FTTB) або на квартиру (FTTH)</li>
+                            <li><strong>Муфти (Splice Closure)</strong> — на точках розгалуження</li>
+                            <li><strong>FOB</strong> — розподільчі бокси на будинках</li>
+                            <li><strong>PLC-дільники</strong> — магістральні (у муфті/MDU) та горищні/поверхові (для FTTH)</li>
+                            <li><strong>Антивандальні бокси</strong> — по 1 на кожен MDU FTTB</li>
+                            <li><strong>Комутатори доступу L2</strong> — 8/16/24/48 портів, по 1 на під'їзд (тільки FTTB)</li>
+                            <li><strong>Оптичний кабель</strong> — 24F, 12F, 8F, 4F (з реальним метражем з карти)</li>
+                            <li><strong>UTP Cat5e</strong> — від комутатора до квартир (тільки FTTB)</li>
+                            <li><strong>Розхідники</strong> — КДЗС, патчкорди SC/UPC, натяжні затискачі</li>
+                        </ul>
+                    </details>
+
+                    <details open style="margin-bottom: 8px; border: 1px solid #bfdbfe; border-radius: 6px; background: #f0f7ff; padding: 8px 10px;">
+                        <summary style="cursor: pointer; font-weight: bold; color: #1e40af;">3. Файл проєкту</summary>
+                        <ul style="list-style-type: circle; padding-left: 1.5rem; margin-top: 4px; margin-bottom: 0;">
+                            <li>Файл <code>.json</code> (експорт з PON Designer) — прикріпити до здачі в Classroom</li>
+                        </ul>
+                    </details>
+                </div>
+                <div class="modern-alert" style="margin-top: 15px; padding: 15px; border-left-color: #f59e0b; background-color: #fffbeb;">
+                    <h4 style="color: #b45309; margin-bottom: 5px;"><svg class="icon-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: -3px; margin-right: 5px;"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg> Альтернативний варіант (Виконання вручну)</h4>
+                    <p style="font-size: 0.95rem; line-height: 1.5; color: #92400e; margin-top: 8px;">
+                        Якщо ви вирішили <strong>не використовувати</strong> програму-симулятор, для кожної з трьох мап ви повинні надати власноруч складений звіт, що включає:
+                        <ul style="list-style-type: circle; padding-left: 1.5rem; margin-top: 0.5rem; color: #92400e; font-size: 0.95rem;">
+                            <li>Графічну схему мережі (карту з позначеними будинками, муфтою, OLT та кабелями).</li>
+                            <li>Таблицю каскадного підключення будинків (аналог Таблиці 6.2 з Лекції 6).</li>
+                            <li>Власноруч складений кошторис BOM із переліком обладнання, кількостями та цінами.</li>
+                        </ul>
+                    </p>
+                </div>
+            </li>
+            <li style="margin-top: 1rem;"><strong>3. Відповіді на контрольні запитання</strong><br>
+                Змістовні відповіді на запитання нижче, що демонструють розуміння теоретичних основ та специфіки FTTB/FTTH.</li>
+            <li style="margin-top: 1rem;"><strong>4. Висновок</strong><br>
+                Порівняльний аналіз трьох етапів:
+                <ul style="list-style-type: disc; padding-left: 1.5rem; margin-top: 0.5rem; margin-bottom: 0.5rem;">
+                    <li><strong>Технічне порівняння:</strong> Чим відрізняється проєктування базової лінії FTTB (Етап 1) від гібридної мережі FTTB+FTTH (Етап 3)?</li>
+                    <li><strong>P2P vs P2MP:</strong> Яка архітектура виявилась ефективнішою? Де межа доцільності PLC-каскаду?</li>
+                    <li><strong>Економічна доцільність:</strong> Який з трьох проєктів найдорожчий (CAPEX)? Що складає основну статтю витрат — кабель, комутатори чи SFP?</li>
+                </ul>
+                <div class="modern-alert Tech" style="margin-top: 15px; padding: 15px;">
+                    <h4><svg class="icon-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: -3px; margin-right: 5px;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Приклад якісного висновку:</h4>
+                    <p style="font-style: italic; font-size: 0.95rem; line-height: 1.5; color: var(--text-color);">
+                        &laquo;Під час виконання практичної роботи було спроєктовано три мережі різної складності. На Етапі 1 побудовано базову лінію FTTB із 5 будинків, де кожен MDU отримав виділене волокно (P2P) — оптичний бюджет не перевищив -12 дБм. Етап 2 виявився найцікавішим: PLC 1×4 у першому MDU дозволив обслуговувати 4 будинки від одного порту OLT, зекономивши 3 SFP-модулі. Проте затухання на останньому будинку каскаду (через PLC + довжину кабелю) склало -23 дБм — на межі допустимого. У гібридному Етапі 3 найскладнішим виявилось проєктування FTTH-будинку: горищний PLC 1×2 + поверховий PLC 1×4 дали сумарне затухання ~14 дБ, а 20 квартир-ONU швидко наповнили порт OLT. Найдорожчим виявився Етап 3 через вартість додаткових PLC-дільників та ONU для кожної квартири FTTH.&raquo;
+                    </p>
+                </div>
+            </li>
+            <li style="margin-top: 1rem;"><strong>5. Здача роботи</strong><br>
+                Сформований звіт та всі графічні/системні додатки (файли <code>.json</code>) необхідно прикріпити до відповідного завдання в системі Classroom.
+                
+                <div class="modern-alert Info compact" style="margin-bottom: 0;">
+                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                    <div>
+                        <strong>Куди вантажити звітність:</strong> завдання<br>
+                        <em>«Створення проекту комп'ютерної мережі міста за технологією FTTB/FTTH»</em><br>
+                        <span style="color: var(--text-muted); font-size: 0.85rem;">(знаходиться у темі «Лабораторні роботи»)</span>
+                    </div>
+                </div>
+            </li>
+        </ul>
+
+        <div style="border-top: 1px solid rgba(0,0,0,0.1); margin-top: 3rem; padding-top: 2rem;">
+            <h2>7. Контрольні запитання</h2>
+            <ol>
+                <li>Чим архітектура Active Ethernet (P2P) принципово відрізняється від GPON (P2MP) з точки зору розподілу ресурсів?</li>
+                <li>Як транзитне кросування у MDU дозволяє каскадно підключати кілька будинків від однієї магістральної жили?</li>
+                <li>Чому при використанні PLC-каскаду (1 волокно → кілька MDU) потрібно ретельно контролювати кількість ONU та абонентів на порт OLT?</li>
+                <li>Як коефіцієнт проникнення впливає на вибір комутатора доступу L2 у режимі FTTB?</li>
+                <li>Яку перевагу має FTTH над FTTB з точки зору швидкості для кінцевого абонента? Який основний недолік FTTH?</li>
+                <li>Поясніть принцип каскадної заміни кабелю по ємності (24F→12F→8F→4F). Яка економічна доцільність цього підходу?</li>
+                <li>Які категорії обладнання входять до кошторису (BOM) мережі FTTB, яких немає у класичній PON для приватного сектору?</li>
+                <li>Чому для великих мікрорайонів баланс між P2P (більше портів OLT) та P2MP (PLC + менше портів) є ключовим інженерним рішенням?</li>
+            </ol>
+        </div>
+
+    </div>
+
+</body>
+</html>
